@@ -1,5 +1,3 @@
-# WhiteboardApp
-This is a Django app for the Internet Application Course
 
  _______________________________________________________
 < Welcome to our Awesome Django Project! >
@@ -9,6 +7,9 @@ This is a Django app for the Internet Application Course
             (__)\       )\/\
                 ||----- |
                 ||     ||
+               
+# WhiteboardApp
+This is a Django app for the Internet Application Course
 
 [![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=SanazJafari)](https://github.com/SanazJafari)
 
