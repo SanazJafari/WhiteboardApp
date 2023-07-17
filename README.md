@@ -1,13 +1,3 @@
-
- _______________________________________________________
-< Welcome to our Awesome Django Project! >
- -------------------------------------------------------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----- |
-                ||     ||
-               
 # WhiteboardApp
 This is a Django app for the Internet Application Course
 
