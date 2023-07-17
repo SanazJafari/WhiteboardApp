@@ -5,4 +5,3 @@ This is a Django app for the Internet Application Course
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=SanazJafari&layout=compact)](https://github.com/SanazJafari)
 
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=SanazJafari&repo=WhiteboardApp)](https://github.com/SanazJafari/WhiteboardApp)
