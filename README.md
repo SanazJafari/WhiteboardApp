@@ -5,3 +5,6 @@ This is a Django app for the Internet Application Course
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=SanazJafari&layout=compact)](https://github.com/SanazJafari)
 
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=anuraghazra&show=reviews)
+
+
