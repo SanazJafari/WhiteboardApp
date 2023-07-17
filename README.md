@@ -3,6 +3,7 @@ This is a Django app for the Internet Application Course. The followings are som
 
 
   <center>**main page**</center>
+  
 ![1_main_page](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/333d795b-0137-4d0c-bf56-714ff6d55be2)
 
                                                  __instructor signup__
