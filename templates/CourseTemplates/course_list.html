@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Course List | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <h1 class="display-4 font-weight-bold" style="text-shadow: 2px 2px 4px rgba(3, 0, 0, 3); padding: 10px;">
+            Course List
+        </h1>
+    </div>
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap">
+        {% for course in courses %}
+            <div class="card" style="width: 14rem; margin: 10px">
+                <img src="/media/{{ course.avatar }}" alt="img" class="card-img-top">
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: row">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                    </div>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{% url 'WhiteboardApp:course-detail' course.pk %}" class="btn btn-info btn-sm">
+                        <i class="fa-solid fa-eye"></i> Details
+                    </a>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination ">
+                {% if courses.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ courses.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true"><i class="fa-solid fa-backward"></i> Previous </span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true"><i class="fa-solid fa-backward"></i> Previous </span>
+                    </li>
+                {% endif %}
+
+                {% for num in courses.paginator.page_range %}
+                    {% if courses.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if courses.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ courses.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">Next <i class="fa-solid fa-forward"></i></span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">Next <i class="fa-solid fa-forward"></i></span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% endblock %}
+
+
+{% block styles %}
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Detail | WhiteboardApp{% endblock %}
+
+{% block content %}
+    <h1>Payment Detail</h1>
+    <p>{{ payment }}</p>
+    <a href="{% url 'WhiteboardApp:payment-update' payment.pk %}">Update Payment</a>
+{% endblock %}

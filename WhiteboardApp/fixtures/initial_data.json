@@ -1,0 +1,89 @@
+[
+  {
+    "model": "WhiteboardApp.membership",
+    "pk": 1,
+    "fields": {
+      "name": "gold",
+      "description": "Gold Membership",
+      "price": "100.00",
+      "benefits": "Access to all courses, Certificate of completion"
+    }
+  },
+  {
+    "model": "WhiteboardApp.membership",
+    "pk": 2,
+    "fields": {
+      "name": "silver",
+      "description": "Silver Membership",
+      "price": "75.00",
+      "benefits": "Access to select courses, Forum access"
+    }
+  },
+  {
+    "model": "WhiteboardApp.membership",
+    "pk": 3,
+    "fields": {
+      "name": "bronze",
+      "description": "Bronze Membership",
+      "price": "50.00",
+      "benefits": "Limited access to courses"
+    }
+  },
+  {
+    "model": "WhiteboardApp.student",
+    "pk": 1,
+    "fields": {
+      "username": "Mohsen",
+      "profile_picture": "profile_pictures/Mohsen.jpg",
+      "bio": "I'm an instructor passionate about teaching.",
+      "date_of_birth": "1990-01-01",
+      "address": "123 Main St, City",
+      "website": "https://www.johndoe.com",
+      "phone_number": "1234567890"
+    }
+  },
+   {
+    "model": "WhiteboardApp.student",
+    "pk": 2,
+    "fields": {
+      "username": "Sara",
+      "profile_picture": "profile_pictures/sara.jpg",
+      "bio": "I'm an instructor passionate about teaching.",
+      "date_of_birth": "1990-01-01",
+      "address": "123 Main St, City",
+      "website": "https://www.sara.com",
+      "phone_number": "123"
+    }
+  },
+  {
+    "model": "WhiteboardApp.instructor",
+    "pk": 1,
+    "fields": {
+      "expertise": "Computer Science",
+      "biography": "I have over 10 years of experience in teaching programming."
+    }
+  },
+  {
+    "model": "WhiteboardApp.course",
+    "pk": 1,
+    "fields": {
+      "title": "Introduction to Python",
+      "description": "Learn the basics of Python programming",
+      "instructor": 1,
+      "start_date": "2023-07-01",
+      "end_date": "2023-08-01",
+      "is_active": true
+    }
+  },
+  {
+    "model": "WhiteboardApp.enrollment",
+    "pk": 1,
+    "fields": {
+      "student": 1,
+      "course": 1,
+      "enrollment_date": "2023-07-01",
+      "is_completed": false,
+      "progress": 0
+    }
+  }
+]

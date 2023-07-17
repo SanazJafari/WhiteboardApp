@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ membership.get_name_display }} | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ membership.get_name_display }}</h1>
+    <p>{{ membership.description }}</p>
+    <a href="{% url 'WhiteboardApp:membership-update' membership.pk %}">Update Membership</a>
+{% endblock %}

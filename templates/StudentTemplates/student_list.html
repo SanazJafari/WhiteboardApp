@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Student List | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+  <h1>Student List</h1>
+      <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Membership</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+
+        <td>{{ student.user.username}}</td>
+        <td>{{ student.user.email }}</td>
+        <td>{{ student.phone_number }}</td>
+        <td>{{ student.membership.name }}</td>
+        <td>
+            <a href="{% url 'WhiteboardApp:student-update' student.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'WhiteboardApp:student-update' student.pk %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'WhiteboardApp:student-create' %}" class="btn btn-primary">Add New Student</a>
+{% endblock %}

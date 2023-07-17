@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Instructors</h1>
+  <ul>
+    {% for instructor in instructors %}
+      <li><a href="{% url 'WhiteboardApp:instructor-detail' instructor.pk %}">{{ instructor.user.username }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,130 @@
+body {
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    width: 350px;
+    display: flex; /* Add display flex to position image and form elements side by side */
+    flex-direction: column; /* Align elements in a column */
+    align-items: center; /* Center elements horizontally */
+}
+
+.login-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    width: 100%; /* Set the width to 100% to make the input fields fill the container */
+    position: relative;
+}
+
+/*.input-group label {*/
+/*    display: block;*/
+/*    margin-bottom: 5px;*/
+/*    position: relative;*/
+/*}*/
+
+.input-group input {
+    width: 80%;
+    padding: 10px 40px 10px 30px; /* Updated padding to accommodate the icon */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.input-group .fa {
+    position: absolute;
+    left: 10px;
+    top: 50%; /* Updated to vertically center the icon */
+    transform: translateY(-50%); /* Updated to vertically center the icon */
+    color: #ccc;
+}
+
+.input-group input::placeholder {
+    font-size: 12px;
+}
+
+.btn-login {
+    background-color: #4285f4;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #1d55c9;
+}
+
+.footer-text {
+    text-align: center;
+    color: #999;
+    margin-top: 20px;
+}
+
+/* Additional CSS for the image */
+.login-container figure {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.login-container figure img {
+    max-width: 70%;
+    height: auto;
+}
+
+/*------------------*/
+
+.form-field {
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 10px 40px 10px 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-field .fa {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+}
+
+.form-field input::placeholder {
+    font-size: 12px;
+}
+
+.alert-danger  {
+    font-size: 12px;
+}

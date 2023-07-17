@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Grade Detail</h1>
+  <p><strong>Student:</strong> {{ grade.student.username }}</p>
+  <p><strong>Course:</strong> {{ grade.course.title }}</p>
+  <p><strong>Grade:</strong> {{ grade.grade }}</p>
+  <p><a href="{% url 'WhiteboardApp:grade-list' %}">Back to Grade List</a></p>
+{% endblock %}

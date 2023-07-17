@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Student List | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+  <h1>Student List of course: {{ course.title }}</h1>
+      <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Membership</th>
+        <th>Mark</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <td>{{ student.user.username}}</td>
+        <td>{{ student.user.email }}</td>
+        <td>{{ student.phone_number }}</td>
+        <td>{{ student.membership.name }}</td>
+        <td>
+            <a href="{% url 'WhiteboardApp:grade_update_for_student_in_course' student_id=student.pk course_id=course.pk%}"
+               class="btn btn-primary">Show Mark</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

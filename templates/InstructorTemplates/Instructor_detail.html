@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Instructor Details</h1>
+  <p>Username: {{ instructor.user.username }}</p>
+  <p>Expertise: {{ instructor.expertise }}</p>
+  <p>Biography: {{ instructor.biography }}</p>
+  <a href="{% url 'WhiteboardApp:instructor-update' instructor.pk %}">Update Instructor</a>
+{% endblock %}

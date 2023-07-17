@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Grade List | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+  <h1>Grade List</h1>
+      <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Course</th>
+        <th>Grade</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grade in grades %}
+      <tr>
+        <td>{{ grade.student.user.username }}</td>
+        <td>{{ grade.course.title }}</td>
+        <td>{{ grade.grade }}</td>
+        <td>
+            <a href="{% url 'WhiteboardApp:grade-update' grade.pk %}" class="btn btn-primary btn-sm">Edit Grade</a>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'WhiteboardApp:grade_create_in_course' course_id%}" class="btn btn-primary">Add New Grade</a>
+{% endblock %}

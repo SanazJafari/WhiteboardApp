@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Enrollment List{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+{% block content %}
+  <h1>Enrollment List</h1>
+  <ul>
+    {% for enrollment in enrollments %}
+      <li><a href="{% url 'WhiteboardApp:enrollment-detail' enrollment.pk %}">{{ enrollment }}</a></li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'WhiteboardApp:enrollment-create' %}">Create New Enrollment</a>
+{% endblock %}

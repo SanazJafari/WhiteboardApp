@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Membership List | WhiteboardApp{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+    <h1>Membership List</h1>
+    {% for membership in memberships %}
+        <h2><a href="{% url 'WhiteboardApp:membership-detail' membership.pk %}">{{ membership.get_name_display }}</a>
+        </h2>
+        <p>{{ membership.description }}</p>
+    {% endfor %}
+{% endblock %}

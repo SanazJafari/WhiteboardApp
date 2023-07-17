@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Content Detail</h1>
+    <p><strong>course:</strong> {{ content.course }}</p>
+    <p><strong>Title:</strong> {{ content.title }}</p>
+    <p><strong>Type:</strong> {{ content.type }}</p>
+    <p><strong>File:</strong> {{ content.file }}</p>
+
+    <p><a href="{% url 'WhiteboardApp:content_create_for_specific_course' content.course.id%}">Back to content List</a></p>
+{% endblock %}
