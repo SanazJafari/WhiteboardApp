@@ -2,11 +2,11 @@
 This is a Django app for the Internet Application Course. The followings are some of the app's pages.
 
 
-<center>**main page**</center>
+                                                    Main Page
   
 ![1_main_page](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/333d795b-0137-4d0c-bf56-714ff6d55be2)
 
-                                                 __instructor signup__
+                                                 Instructor signup
 ![2_instructor_signup](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/8e854bd5-d787-486b-b709-5c45ce2de8b2)
                                                
                                                  student signup
