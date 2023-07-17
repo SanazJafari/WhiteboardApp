@@ -9,10 +9,10 @@ This is a Django app for the Internet Application Course. The followings are som
                                                  Instructor signup
 ![2_instructor_signup](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/8e854bd5-d787-486b-b709-5c45ce2de8b2)
                                                
-                                                 student signup
+                                                     student signup
 ![3_student_signup](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/9c556af5-c512-403d-8da4-ca5fbb7ca067)
                                                      
-                                                       login
+                                                           login
 ![4_login](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/8ecc27a9-8a94-414d-b558-0cc80a87d12a)
                                                    
                                                    course list
