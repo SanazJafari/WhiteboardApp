@@ -6,7 +6,7 @@ This is a Django app for the Internet Application Course. The followings are som
 
 ![1_main_page](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/333d795b-0137-4d0c-bf56-714ff6d55be2)
 
-                                                 instructor signup
+                                                 __ instructor signup __
 ![2_instructor_signup](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/8e854bd5-d787-486b-b709-5c45ce2de8b2)
                                                
                                                  student signup
