@@ -15,7 +15,7 @@ This is a Django app for the Internet Application Course. The followings are som
                                                            login
 ![4_login](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/8ecc27a9-8a94-414d-b558-0cc80a87d12a)
                                                    
-                                                   course list
+                                                       course list
 ![5_course_list](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/fbfcbb6c-d4af-477a-9c25-63793684850d)
                                              
                                                  student my Course list
@@ -25,7 +25,7 @@ This is a Django app for the Internet Application Course. The followings are som
                                               
 ![7_studet_course_detail](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/df028bb7-4cb3-4104-9f38-af0df3cfa078)
                                              
-                                               student profile update
+                                                 student profile update
                                              
 ![8_student_profile_update](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/ae446d7b-372e-43b1-9bcd-d01f1e7fa5b1)
  
