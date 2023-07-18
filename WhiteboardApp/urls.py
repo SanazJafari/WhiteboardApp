@@ -14,8 +14,9 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 
     #  Signup
-    path('signup/<int:userType>', views.signup_post, name='signup_Instructor'),
-    path('signup/<int:userType>', views.signup_post, name='signup_Student'),
+    path('signup/<int:userType>', views.signup_post, name='signup'),
+    # path('signup/<int:userType>', views.signup_post, name='signup_Instructor'),
+    # path('signup/<int:userType>', views.signup_post, name='signup_Student'),
 
     # Instructor Urls
     path('instructors/', views.instructor_list, name='instructor-list'),
