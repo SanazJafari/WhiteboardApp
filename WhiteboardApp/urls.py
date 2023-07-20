@@ -50,6 +50,9 @@ urlpatterns = [
     path('payments/<int:pk>/update/', views.payment_update, name='payment-update'),
     path('paymentStripe/', views.process_payment_stripe, name='process_payment_stripe'),
 
+    path('payment_view/', views.payment_view, name='payment_view'),
+    path('do_payment/', views.do_payment, name='do_payment'),
+
     # Student Urls
     path('students/', views.student_list, name='student-list'),
     path('students/create/', views.student_create, name='student-create'),

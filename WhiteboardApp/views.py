@@ -255,21 +255,22 @@ def process_payment_stripe(request):
             year = date_values[1]
             try:
                 # Create a payment method using Stripe Elements
-                payment_method = stripe.PaymentMethod.create(
-                    type='card',
-                    card={
-                        'number': card_number,
-                        'exp_month': month,
-                        'exp_year': year,
-                        'cvc': cvc
-                    }
-                )
+                # payment_method = stripe.PaymentMethod.create(
+                #     type='card',
+                #     card={
+                #         'number': '4242 4242 4242 4242 ',
+                #         'exp_month': month,
+                #         'exp_year': year,
+                #         'cvc': cvc
+                #     }
+                # )
 
                 # Create a payment intent and confirm the payment
                 payment_intent = stripe.PaymentIntent.create(
                     amount=int(amount * 100),  # Convert amount to cents
                     currency=currency,
-                    payment_method=payment_method.id,
+                    # payment_method= payment_method.id,
+                    payment_method="pm_card_mastercard",
                     confirm=True
                 )
 
@@ -681,3 +682,45 @@ def course_progress(request, course_id):
     }
 
     return render(request, 'CourseTemplates/course_students_progress.html', context)
+
+
+def do_payment(request):
+    return render(request, 'PaymentTemplates/checkout.html')
+
+
+# views.py
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import render
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+def payment_view(request):
+    if request.method == 'POST':
+        # Get the token and amount from the client-side form
+        token = request.POST.get('stripeToken')
+        amount = request.POST.get('amount')
+
+        try:
+            # Create a charge using the Stripe API
+            charge = stripe.Charge.create(
+                amount=int(amount),
+                currency='usd',
+                description='Payment for your order',
+                source=token,
+            )
+
+            # Handle successful payment, e.g., update the database, send confirmation email, etc.
+            # You can customize this part based on your application's needs.
+
+            return JsonResponse({'message': 'Payment successful!'})
+        except stripe.error.CardError as e:
+            # Handle card errors
+            return JsonResponse({'error': str(e)})
+        except stripe.error.StripeError as e:
+            # Handle other Stripe errors
+            return JsonResponse({'error': str(e)})
+
+    return render(request, 'PaymentTemplates/payment.html', {'stripe_public_key': settings.STRIPE_PUBLIC_KEY})
