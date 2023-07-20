@@ -275,6 +275,15 @@ def process_payment_stripe(request):
                 )
 
                 # Handle successful payment
+                student = form.cleaned_data['student']
+                amount = form.cleaned_data['amount']
+                currency = form.cleaned_data['currency']
+                card_number = form.cleaned_data['card_number']
+                expiration_date = form.cleaned_data['expiration_date']
+                cvc = form.cleaned_data['cvc']
+                payment = Payment(student_id=student.id, amount=amount, currency=currency,
+                                  card_number=card_number, expiration_date=expiration_date, cvc=cvc)
+                payment.save()
                 return render(request, 'PaymentTemplates/payment_Success.html')
 
             except stripe.error.CardError as e:
