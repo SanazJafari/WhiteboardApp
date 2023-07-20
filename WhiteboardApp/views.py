@@ -212,6 +212,11 @@ def payment_list(request):
     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
 
 
+def payment_list_of_student(request, student_id):
+    payments = Payment.objects.filter(student_id=student_id)
+    return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
+
+
 def payment_detail(request, pk):
     payment = get_object_or_404(Payment, pk=pk)
     return render(request, 'PaymentTemplates/payment_detail.html', {'payment': payment})
@@ -284,7 +289,7 @@ def process_payment_stripe(request):
                 payment = Payment(student_id=student.id, amount=amount, currency=currency,
                                   card_number=card_number, expiration_date=expiration_date, cvc=cvc)
                 payment.save()
-                return render(request, 'PaymentTemplates/payment_Success.html')
+                return render(request, 'PaymentTemplates/payment_Success.html', {'amount': amount, 'currency': currency})
 
             except stripe.error.CardError as e:
                 error_message = e.error.message

@@ -49,6 +49,7 @@ urlpatterns = [
     path('payments/create/', views.payment_create, name='payment-create'),
     path('payments/<int:pk>/update/', views.payment_update, name='payment-update'),
     path('paymentStripe/', views.process_payment_stripe, name='process_payment_stripe'),
+    path('payments/<int:student_id>', views.payment_list_of_student, name='payment_list_of_student'),
 
     # Student Urls
     path('students/', views.student_list, name='student-list'),
@@ -77,6 +78,7 @@ urlpatterns = [
     path('grades/create/<int:student_id>/<int:course_id>', views.grade_create_for_student_in_course,
          name='grade_create_for_student_in_course'),
     path('grades/create/<int:course_id>', views.grade_create_in_course, name='grade_create_in_course'),
+
     # Content Urls
     # path('contents/', views.content_list, name='content-list'),
     path('contents/<int:instructor_id>', views.content_list_for_instructor, name='content_list_for_instructor'),

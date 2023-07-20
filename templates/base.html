@@ -92,21 +92,46 @@
         {% if user.is_authenticated %}
             {% if user.student %}
                 <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'WhiteboardApp:process_payment_stripe' %}">
-                            <i class="fas fa-credit-card"></i> Make a Payment
-                        </a>
-                    </li>
+
+                    {# Payment Management #}
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-credit-card"></i> Payment Management
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'WhiteboardApp:process_payment_stripe' %}">
+                                        <i class="fa-brands fa-cc-stripe"></i> Make a Payment
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="{% url 'WhiteboardApp:payment_list_of_student' user.student.id %}">
+                                        <i class="fa-solid fa-list"></i> My payments List
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    {#My Courses#}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'WhiteboardApp:enrollment-list-of-student' user.student.id %}">
                             <i class="fa-solid fa-list-check"></i> My Courses
                         </a>
                     </li>
+
+                    {#Profile#}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'WhiteboardApp:student-update-by-userId' user.id %}">
                             <i class="fas fa-user"></i> Profile
                         </a>
                     </li>
+
                 </ul>
             {% elif user.instructor %}
                 <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
@@ -168,7 +193,8 @@
             {% for image in images %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="carousel-image d-flex align-items-center justify-content-center">
-                        <img src="{% static 'image/banner/' %}{{ image }}" alt="Slide {{ forloop.counter }}" class="img-fluid">
+                        <img src="{% static 'image/banner/' %}{{ image }}" alt="Slide {{ forloop.counter }}"
+                             class="img-fluid">
                     </div>
                 </div>
             {% endfor %}
