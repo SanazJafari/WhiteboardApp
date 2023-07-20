@@ -34,10 +34,16 @@
                 {% if user.is_authenticated %}
                     {% if user.student %}
                         {% if is_enrolled_course == False %}
-                            <button type="button" id="btn_enroll" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#enrollmentModal">
-                                Enroll
-                            </button>
+                            {% if has_enrollment_permission %}
+                                <button type="button" id="btn_enroll" class="btn btn-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#enrollmentModal">
+                                    Enroll
+                                </button>
+                            {% else %}
+                                <a href="#" class="btn btn-secondary btn-sm" disabled
+                                   title="you reached the quota and can not enroll in another course">Enroll</a>
+                            {% endif %}
 
                         {% endif %}
                     {% endif %}
@@ -69,7 +75,7 @@
             <div class="card-body">
                 {% if user.is_authenticated %}
                     {% if user.instructor and is_current_instructor_course == True %}
-                        <a href="{% url 'WhiteboardApp:course_student_list_pagination' course.id%}"
+                        <a href="{% url 'WhiteboardApp:course_student_list_pagination' course.id %}"
                            class="btn btn-info btn-sm">
                             <i class="fa-solid fa-graduation-cap"></i> Course Students
                         </a>

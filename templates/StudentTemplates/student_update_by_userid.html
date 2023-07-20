@@ -145,12 +145,12 @@
                         <div class="input-group input-group-sm mb-2">
                             <label for="{{ form.membership.id_for_label }}"
                                    class="input-group-text">Membership: </label>
-                            <select class="form-select"
-                                    id="{{ form.membership.id_for_label }}"
-                                    name="{{ form.membership.html_name }}" >
+                            <select class="form-select" id="{{ form.membership.id_for_label }}"
+                                    name="{{ form.membership.html_name }}">
                                 {% for membership in form.membership.field.queryset %}
                                     <option value="{{ membership.id }}"
-                                            {% if membership.id == form.membership.value %}selected{% endif %}>
+                                            {% if membership.id == form.membership.value %}selected{% endif %}
+                                            {% if membership.id != form.instance.membership_id %}disabled{% endif %}>
                                         {{ membership }}
                                     </option>
                                 {% endfor %}

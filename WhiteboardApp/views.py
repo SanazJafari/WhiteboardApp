@@ -73,6 +73,7 @@ def instructor_update_by_userid(request, userid):
             return redirect('WhiteboardApp:instructor-update-by-userId', userid=userid)
     else:
         form = InstructorForm(instance=instructor)
+        form.fields['user'].queryset = User.objects.filter(pk=user.id)
     return render(request, 'InstructorTemplates/instructor_update_by_userid.html',
                   {'form': form, 'first_name': user.first_name, 'last_name': user.last_name})
 
@@ -126,17 +127,21 @@ def course_detail(request, pk):
     grade = None
     is_current_instructor_course = False
     student_completed_contents = None
+    has_enrollment_permission = False
 
     if request.user.is_authenticated:
         instructor = Instructor.objects.filter(user_id=request.user.id).first()
         student = Student.objects.filter(user_id=request.user.id).first()
 
     if student:
+        student_completed_contents = Progress.objects.filter(student_id=student.id).values_list('content_id', flat=True)
+        student_enrolled_course_count = Enrollment.objects.filter(student_id=student.id).count()
+        has_enrollment_permission = (student.membership.name == 'bronze' and student_enrolled_course_count < 5) or \
+                                    (student.membership.name == 'silver' and student_enrolled_course_count < 10) or \
+                                    (student.membership.name == 'gold' and student_enrolled_course_count < 20)
         if student.courses_enrolled.filter(pk=course.pk).exists():
             is_enrolled_course = True
             grade = Grade.objects.filter(course_id=course.id, student_id=student.id).first()
-            student_completed_contents = Progress.objects.filter(student_id=student.id).values_list('content_id',
-                                                                                                    flat=True)
 
     if instructor:
         if course.instructor_id == instructor.id:
@@ -144,11 +149,11 @@ def course_detail(request, pk):
 
     return render(request, 'CourseTemplates/course_detail.html', {'course': course,
                                                                   'is_enrolled_course': is_enrolled_course,
+                                                                  'student': student,
                                                                   'grade': grade,
-                                                                  'is_current_instructor_course':
-                                                                      is_current_instructor_course,
-                                                                  'completed_contents':
-                                                                      student_completed_contents})
+                                                                  'has_enrollment_permission': has_enrollment_permission,
+                                                                  'is_current_instructor_course': is_current_instructor_course,
+                                                                  'completed_contents': student_completed_contents})
 
 
 def course_create(request):
@@ -336,8 +341,10 @@ def student_update_by_userid(request, userid):
             return redirect('WhiteboardApp:student-update-by-userId', userid=userid)
     else:
         form = StudentForm(instance=student)
+        form.fields['user'].queryset = User.objects.filter(pk=user.id)
     return render(request, 'StudentTemplates/student_update_by_userid.html',
                   {'form': form, 'first_name': user.first_name, 'last_name': user.last_name})
+
 
 # Enrolment Views
 
@@ -487,10 +494,10 @@ def grade_create_in_course(request, course_id):
         form = GradeForm()
         course = Course.objects.filter(pk=course_id).first()  # Fetch the first course object
         students = Student.objects.filter(courses_enrolled=course)  # Fetch students of the course
-        form.fields['course'].queryset = Course.objects.filter(pk=course_id)  # Set the queryset of the 'course' field in the form
+        form.fields['course'].queryset = Course.objects.filter(
+            pk=course_id)  # Set the queryset of the 'course' field in the form
         form.fields['student'].queryset = students  # Set the queryset of the 'student' field in the form
     return render(request, 'GradeTemplates/Grade_create.html', {'form': form, 'course_id': course_id})
-
 
 
 def main_banner(request):
