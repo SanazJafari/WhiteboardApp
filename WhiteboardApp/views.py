@@ -16,7 +16,7 @@ from django.conf import settings
 from django.http import FileResponse
 from cryptography.fernet import Fernet
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 # Instructor Views
 
@@ -59,6 +59,7 @@ def instructor_update(request, pk):
     return render(request, 'InstructorTemplates/instructor_update.html', {'form': form})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def instructor_update_by_userid(request, userid):
     instructor = get_object_or_404(Instructor, user_id=userid)
     user = instructor.user
@@ -96,6 +97,7 @@ def course_list_paginate(request):
     return render(request, 'CourseTemplates/course_list.html', {'courses': page_obj})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def course_students_list_paginate(request, course_id):
     # Retrieve the Course object based on the course_id
     course = get_object_or_404(Course, id=course_id)
@@ -108,6 +110,7 @@ def course_students_list_paginate(request, course_id):
     return render(request, 'CourseTemplates/course_student_list.html', {'students': page_obj, 'course': course})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def course_list_paginate_instructor(request, instructor_id):
     courses_of_instructor = Course.objects.filter(instructor_id=instructor_id).order_by('pk')
 
@@ -155,7 +158,7 @@ def course_detail(request, pk):
                                                                   'is_current_instructor_course': is_current_instructor_course,
                                                                   'completed_contents': student_completed_contents})
 
-
+@login_required(login_url="WhiteboardApp:login_post")
 def course_create(request):
     if request.method == 'POST':
         form = CourseForm(request.POST, request.FILES)
@@ -212,6 +215,7 @@ def payment_list(request):
     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def payment_list_of_student(request, student_id):
     payments = Payment.objects.filter(student_id=student_id)
     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
@@ -245,6 +249,7 @@ def payment_update(request, pk):
     return render(request, 'PaymentTemplates/payment_update.html', {'form': form})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def process_payment_stripe(request):
     if request.method == 'POST':
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -321,6 +326,7 @@ def student_detail(request, pk):
     return render(request, 'StudentTemplates/student_detail.html', {'student': student})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def student_detail_by_userid(request, userid):
     student = get_object_or_404(Student, user_id=userid)
     return render(request, 'StudentTemplates/student_detail.html', {'student': student})
@@ -349,6 +355,7 @@ def student_update(request, pk):
     return render(request, 'StudentTemplates/student_update.html', {'form': form})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def student_update_by_userid(request, userid):
     student = get_object_or_404(Student, user_id=userid)
     user = student.user  # Retrieve the related User object directly from the student instance
@@ -375,7 +382,7 @@ def enrollment_list(request):
     enrollments = Enrollment.objects.all()
     return render(request, 'EnrolmentTemplates/Enrollment_list.html', {'enrollments': enrollments})
 
-
+@login_required(login_url="WhiteboardApp:login_post")
 def enrollment_list_of_student(request, student_id):
     enrollments = get_list_or_404(Enrollment, student_id=student_id)
 
@@ -414,6 +421,7 @@ def enrollment_update(request, pk):
     return render(request, 'EnrolmentTemplates/Enrollment_update.html', {'form': form})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     user = get_object_or_404(Student, user_id=request.user.id)
@@ -434,6 +442,7 @@ def enroll_course(request, course_id):
 #     return render(request, 'GradeTemplates/Grade_list.html', {'grades': grades})
 #
 
+@login_required(login_url="WhiteboardApp:login_post")
 def grade_list_of_course(request, course_id):
     grades = Grade.objects.filter(course_id=course_id)
     return render(request, 'GradeTemplates/Grade_list.html', {'grades': grades, 'course_id': course_id})
@@ -442,17 +451,6 @@ def grade_list_of_course(request, course_id):
 def grade_detail(request, pk):
     grade = get_object_or_404(Grade, pk=pk)
     return render(request, 'GradeTemplates/Grade_detail.html', {'grade': grade})
-
-
-# def grade_create(request):
-#     if request.method == 'POST':
-#         form = GradeForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('WhiteboardApp:grade-list')
-#     else:
-#         form = GradeForm()
-#     return render(request, 'GradeTemplates/Grade_create.html', {'form': form})
 
 
 def grade_update(request, pk):
@@ -471,6 +469,7 @@ def grade_update(request, pk):
     return render(request, 'GradeTemplates/Grade_update.html', {'form': form, 'course_id': grade.course.id})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def grade_update_for_student_in_course(request, student_id, course_id):
     grade = Grade.objects.filter(student_id=student_id, course_id=course_id)
     if not grade:
@@ -491,6 +490,7 @@ def grade_update_for_student_in_course(request, student_id, course_id):
     return render(request, 'GradeTemplates/Grade_update.html', {'form': form, 'course_id': course.first().id})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def grade_create_for_student_in_course(request, student_id, course_id):
     if request.method == 'POST':
         form = GradeForm(request.POST)
@@ -506,6 +506,7 @@ def grade_create_for_student_in_course(request, student_id, course_id):
     return render(request, 'GradeTemplates/Grade_create.html', {'form': form, 'course_id': course.first().id})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def grade_create_in_course(request, course_id):
     if request.method == 'POST':
         form = GradeForm(request.POST)
@@ -609,12 +610,7 @@ def signup_post(request, userType):
 
 # Content Views
 
-
-# def content_list(request):
-#     contents = Content.objects.all()
-#     return render(request, 'ContentTemplates/Content_list.html', {'contents': contents})
-
-
+@login_required(login_url="WhiteboardApp:login_post")
 def content_list_for_instructor(request, instructor_id):
     contents = Content.objects.filter(course__instructor_id=instructor_id)
     return render(request, 'ContentTemplates/Content_list.html', {'contents': contents})
@@ -645,6 +641,7 @@ def content_delete(request, pk):
     return redirect('WhiteboardApp:content_list_for_instructor', instructor_id=request.user.instructor.id)
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def content_create_for_specific_course(request, course_id):
     if request.method == 'POST':
         form = ContentForm(request.POST, request.FILES)
@@ -672,6 +669,7 @@ def content_update(request, pk):
     return render(request, 'ContentTemplates/Content_update.html', {'form': form})
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def download_content(request, content_id):
     content = get_object_or_404(Content, pk=content_id)
     file_path = os.path.join(settings.MEDIA_ROOT, content.file.path)
@@ -679,6 +677,7 @@ def download_content(request, content_id):
     return response
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def content_complete_for_student(request, content_id, student_id):
     content = Content.objects.get(pk=content_id)
     student_content_progress = Progress(student_id=student_id, content_id=content_id, is_completed=True)
@@ -686,6 +685,7 @@ def content_complete_for_student(request, content_id, student_id):
     return redirect('WhiteboardApp:course-detail', pk=content.course.id)
 
 
+@login_required(login_url="WhiteboardApp:login_post")
 def course_progress(request, course_id):
     course = Course.objects.get(id=course_id)
     enrollments = Enrollment.objects.filter(course=course)
