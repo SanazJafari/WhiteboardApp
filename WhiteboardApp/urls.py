@@ -12,6 +12,8 @@ urlpatterns = [
     # path('login/', views.login_post, name='login_post'),
     path('login/', CustomLoginView.as_view(), name='login_post'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('phoneVerification/', views.phone_verification, name='phone_verification'),
+    path('verifyPhoneNumber/', views.verify_phone_number, name='verify_phone_number'),
 
     #  Signup
     path('signup/<int:userType>', views.signup_post, name='signup'),

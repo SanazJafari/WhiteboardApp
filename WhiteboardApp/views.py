@@ -1,9 +1,11 @@
+import random
+
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
-from .models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
+from WhiteboardApp.models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
     Progress
 from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
-    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm
+    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm
 import os
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import JsonResponse
@@ -17,6 +19,7 @@ from django.http import FileResponse
 from cryptography.fernet import Fernet
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from twilio.rest import Client
 
 # Instructor Views
 
@@ -703,3 +706,54 @@ def course_progress(request, course_id):
     }
 
     return render(request, 'CourseTemplates/course_students_progress.html', context)
+
+
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- SMS verification -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+def send_sms_verification(phone_number, verification_code):
+    # Your Twilio account SID and Auth Token
+    account_sid = settings.TWILIO_ACCOUNT_SID
+    auth_token = settings.TWILIO_AUTH_TOKEN
+
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        from_= settings.TWILIO_FROM_NUMBER,  # your Twilio number
+        body=f'Your verification code is {verification_code}',
+        to= settings.TWILIO_TO_NUMBER
+    )
+
+def phone_verification(request):
+    if request.method == 'POST':
+        form = PhoneVerificationForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number')
+            # Generate a 6-digit verification code
+            verification_code = str(random.randint(100000, 999999))
+            # Send the verification code to the user's phone
+            send_sms_verification(phone_number, verification_code)
+            # Store the phone number and verification code in the session
+            request.session['phone_number'] = phone_number
+            request.session['verification_code'] = verification_code
+            # Redirect to a page where the user can enter the verification code
+            return redirect('WhiteboardApp:verify_phone_number')
+    else:
+        form = PhoneVerificationForm()
+    return render(request, 'VerificationTemplates/verify_phone_number.html', {'form': form, 'pageTitle': 'Phone Verification'})
+
+    # ... rest of the function ...
+
+def verify_phone_number(request):
+    if request.method == 'POST':
+        entered_code = request.POST.get('code')
+        if entered_code == request.session.get('verification_code'):
+            # The verification code is correct, continue with the sign-up process
+            # ... sign-up logic ...
+            # Don't forget to delete the phone number and verification code from the session
+            del request.session['phone_number']
+            del request.session['verification_code']
+        else:
+            # The verification code is incorrect, show an error
+            return render(request, 'verify_phone_number.html', {'error': 'The entered code is incorrect.'})
+    else:
+        return render(request, 'verify_phone_number.html')
+

@@ -77,3 +77,12 @@ class ContentForm(forms.ModelForm):
     class Meta:
         model = Content
         fields = ['course', 'title', 'type', 'file']
+
+
+class PhoneVerificationForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['phone_number']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
+        }

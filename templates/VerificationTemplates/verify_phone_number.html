@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Verification</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+
+<body>
+<div class="login-container">
+    <h1>Phone Verification</h1>
+    <figure><img src="{% static 'image/Phone Verification.jpg' %}" alt="login image"></figure>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-field">
+            <i class="fa fa-lock"></i>
+            <input type="text" name="code" placeholder="Enter your verification code" required>
+        </div>
+        <button class="btn-login" type="submit">Verify</button>
+        <button class="btn-login" id="resend-code" disabled>Resend code</button>
+        <div class="form-field"></div>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show">
+                {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+    </form>
+</div>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Enable the "Resend code" button after 2 minutes
+    setTimeout(function() {
+        $('#resend-code').prop('disabled', false);
+    }, 2 * 60 * 1000);
+});
+</script>
+</body>
+</html>

@@ -29,7 +29,8 @@
                                    class="input-group-text">User: </label>
                             <select class="form-select"
                                     id="{{ form.user.id_for_label }}"
-                                    name="{{ form.user.html_name }}">
+                                    name="{{ form.user.html_name }}"
+                            disabled>
                                 {% for user in form.user.field.queryset %}
                                     <option value="{{ user.id }}"
                                             {% if user.id == form.user.value %}selected{% endif %}>
@@ -45,17 +46,14 @@
                             <input type="text" class="form-control form-control-sm"
                                    id="first_name"
                                    name="first_name"
-                                   placeholder="firstname"
-                                   value="{{ first_name |default:'' }}"/>
-                        </div>
-
-                        {# Lastname #}
-                        <div class="input-group input-group-sm mb-2">
+                                   placeholder="First Name"
+                                   value="{{ first_name |default:'' }}"
+                                   autofocus/>
                             <span class="input-group-text" id="inputGroup-sizing-sm">Lastname: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="last_name"
                                    name="last_name"
-                                   placeholder="lastname"
+                                   placeholder="Last Name"
                                    value="{{ last_name |default:'' }}"/>
                         </div>
 
@@ -94,16 +92,19 @@
                             <div class="col">
                                 <input width="300" placeholder="date of birth"
                                        id="{{ form.date_of_birth.id_for_label }}"
+                                       type="date"
                                        name="{{ form.date_of_birth.html_name }}"
                                        value="{{ form.date_of_birth.value|default:'' }}"/>
                             </div>
                             <div class="col">
                                 <div class="input-group input-group-sm mb-2">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm">phone number: </span>
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">
+                                        Phone:
+                                    </span>
                                     <input type="text" class="form-control form-control-sm"
                                            id="{{ form.phone_number.id_for_label }}"
                                            name="{{ form.phone_number.html_name }}"
-                                           placeholder="phone number like 226-961-1111"
+                                           placeholder="e.x 226-961-1111"
                                            value="{{ form.phone_number.value|default:'' }}">
                                 </div>
                             </div>
@@ -146,7 +147,8 @@
                             <label for="{{ form.membership.id_for_label }}"
                                    class="input-group-text">Membership: </label>
                             <select class="form-select" id="{{ form.membership.id_for_label }}"
-                                    name="{{ form.membership.html_name }}">
+                                    name="{{ form.membership.html_name }}"
+                            disabled>
                                 {% for membership in form.membership.field.queryset %}
                                     <option value="{{ membership.id }}"
                                             {% if membership.id == form.membership.value %}selected{% endif %}
