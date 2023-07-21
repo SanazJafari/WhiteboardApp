@@ -579,9 +579,9 @@ class CustomLogoutView(LogoutView):
 
 def signup_post(request, userType):
     if userType == 1:
-        pagetitle = 'Instructor Sign-Up'
+        page_title = 'Instructor Sign-Up'
     else:
-        pagetitle = 'Student Sign-Up'
+        page_title = 'Student Sign-Up'
 
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -597,7 +597,7 @@ def signup_post(request, userType):
             return redirect('WhiteboardApp:login_post')  # Redirect to login page after successful sign-up
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form, 'pageTitle': pagetitle})
+    return render(request, 'signup.html', {'form': form, 'pageTitle': page_title})
 
 
 # Content Views
