@@ -48,6 +48,7 @@ urlpatterns = [
     path('payments/<int:pk>/', views.payment_detail, name='payment-detail'),
     path('payments/create/', views.payment_create, name='payment-create'),
     path('payments/<int:pk>/update/', views.payment_update, name='payment-update'),
+
     path('paymentStripe/', views.process_payment_stripe, name='process_payment_stripe'),
     path('payments/<int:student_id>', views.payment_list_of_student, name='payment_list_of_student'),
 

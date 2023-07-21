@@ -259,6 +259,7 @@ def process_payment_stripe(request):
             month = date_values[0]
             year = date_values[1]
             try:
+                # this one is only in use for real case payment
                 # Create a payment method using Stripe Elements
                 # payment_method = stripe.PaymentMethod.create(
                 #     type='card',
@@ -281,15 +282,16 @@ def process_payment_stripe(request):
 
                 # Handle successful payment
                 student = form.cleaned_data['student']
-                amount = form.cleaned_data['amount']
-                currency = form.cleaned_data['currency']
-                card_number = form.cleaned_data['card_number']
-                expiration_date = form.cleaned_data['expiration_date']
-                cvc = form.cleaned_data['cvc']
                 payment = Payment(student_id=student.id, amount=amount, currency=currency,
                                   card_number=card_number, expiration_date=expiration_date, cvc=cvc)
                 payment.save()
-                return render(request, 'PaymentTemplates/payment_Success.html', {'amount': amount, 'currency': currency})
+
+                # save card number and expiration_date in session to store for next payments if needed
+                request.session['card_number'] = card_number
+                request.session['expiration_date'] = expiration_date
+
+                return render(request, 'PaymentTemplates/payment_Success.html',
+                              {'amount': amount, 'currency': currency})
 
             except stripe.error.CardError as e:
                 error_message = e.error.message
@@ -298,7 +300,12 @@ def process_payment_stripe(request):
         student = Student.objects.select_related('user').get(user_id=request.user.id)
         payment = Payment(student=student)
         form = PaymentFormStripe(instance=payment)
-    return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form})
+        # read card_number and expiration_date from session and send to from
+        card_number = request.session.get('card_number')
+        expiration_date = request.session.get('expiration_date')
+        return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form,
+                                                                               'card_number': card_number,
+                                                                               'expiration_date': expiration_date})
 
 
 # Student Views
