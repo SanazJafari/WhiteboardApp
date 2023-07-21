@@ -11,19 +11,21 @@
             Course List
         </h1>
     </div>
-    <div style="display: flex; flex-direction: row; flex-wrap: wrap">
+    <div class="row">
         {% for course in courses %}
-            <div class="card" style="width: 14rem; margin: 10px">
-                <img src="/media/{{ course.avatar }}" alt="img" class="card-img-top">
-                <div class="card-body">
-                    <div style="display: flex; flex-direction: row">
-                        <h5 class="card-title">{{ course.title }}</h5>
-                    </div>
-                    <p class="card-text">{{ course.description }}</p>
-                    <a href="{% url 'WhiteboardApp:course-detail' course.pk %}" class="btn btn-info btn-sm">
-                        <i class="fa-solid fa-eye"></i> Details
-                    </a>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+                <div class="card h-100">
+                    <img src="/media/{{ course.avatar }}" alt="img" class="card-img-top" style="width: 100%; height: auto;">
+                    <div class="card-body">
+                        <div>
+                            <h5 class="card-title">{{ course.title }}</h5>
+                        </div>
+                        <p class="card-text">{{ course.description }}</p>
+                        <a href="{% url 'WhiteboardApp:course-detail' course.pk %}" class="btn btn-info btn-sm">
+                            <i class="fa-solid fa-eye"></i> Details
+                        </a>
 
+                    </div>
                 </div>
             </div>
         {% endfor %}
