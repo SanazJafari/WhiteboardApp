@@ -28,7 +28,10 @@ This is a Django app for the Internet Application Course. The followings are som
                                                  student profile update
                                              
 ![8_student_profile_update](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/ae446d7b-372e-43b1-9bcd-d01f1e7fa5b1)
- 
+
+                                                           Make a Payment
+![4_make_a_payment](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/e586aae0-5f84-4ae4-bd54-fa58c361f223)
+                    
                                                  instructor course management detail
                                                
 ![9_instructor_course_management_detail](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/849e2aa5-e393-4773-b22e-f0c4d0846122)
