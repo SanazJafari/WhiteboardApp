@@ -9,7 +9,6 @@ urlpatterns = [
     path('', views.main_banner, name='main_banner'),
 
     #  Login and Logout Url
-    # path('login/', views.login_post, name='login_post'),
     path('login/', CustomLoginView.as_view(), name='login_post'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 

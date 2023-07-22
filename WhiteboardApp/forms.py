@@ -23,12 +23,6 @@ class MembershipForm(forms.ModelForm):
         fields = ['name', 'description', 'price', 'benefits']
 
 
-# class PaymentForm(forms.ModelForm):
-#     class Meta:
-#         model = Payment
-#         fields = ['student', 'amount', 'currency', 'transaction_id']
-
-
 class PaymentFormStripe(forms.ModelForm):
     class Meta:
         model = Payment

@@ -158,6 +158,7 @@ def course_detail(request, pk):
                                                                   'is_current_instructor_course': is_current_instructor_course,
                                                                   'completed_contents': student_completed_contents})
 
+
 @login_required(login_url="WhiteboardApp:login_post")
 def course_create(request):
     if request.method == 'POST':
@@ -208,42 +209,6 @@ def membership_update(request, pk):
 
 
 # Payment Views
-
-
-# def payment_list(request):
-#     payments = Payment.objects.all()
-#     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
-
-
-
-
-
-# def payment_detail(request, pk):
-#     payment = get_object_or_404(Payment, pk=pk)
-#     return render(request, 'PaymentTemplates/payment_detail.html', {'payment': payment})
-#
-#
-# def payment_create(request):
-#     if request.method == 'POST':
-#         form = PaymentForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('WhiteboardApp:payment-list')
-#     else:
-#         form = PaymentForm()
-#     return render(request, 'PaymentTemplates/payment_create.html', {'form': form})
-
-
-# def payment_update(request, pk):
-#     payment = get_object_or_404(Payment, pk=pk)
-#     if request.method == 'POST':
-#         form = PaymentForm(request.POST, instance=payment)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('WhiteboardApp:payment-list')
-#     else:
-#         form = PaymentForm(instance=payment)
-#     return render(request, 'PaymentTemplates/payment_update.html', {'form': form})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
@@ -530,7 +495,7 @@ def main_banner(request):
     encrypted_username = request.COOKIES.get('username')
     encrypted_password = request.COOKIES.get('password')
 
-    if encrypted_username and encrypted_password:
+    if encrypted_username and encrypted_password and request.user.is_authenticated is False:
         # Decrypt the encrypted username and password using the same key that we encrypt
         key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
         fernet = Fernet(key)
