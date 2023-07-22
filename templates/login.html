@@ -26,6 +26,7 @@
         </div>
         <button class="btn-login" type="submit">Login</button>
         <div class="form-field"></div>
+
         {% if form.errors %}
             {% for field in form %}
                 {% for error in field.errors %}
@@ -35,17 +36,21 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-
         {% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
     </form>
     <p class="footer-text">Don't have an account?</p>
-        <a href="{% url 'WhiteboardApp:signup' 1%}">Instructor Sign up</a>
-        <a href="{% url 'WhiteboardApp:signup' 2%}">Student Sign up</a>
+    <a href="{% url 'WhiteboardApp:signup' 1 %}">Instructor Sign up</a>
+    <a href="{% url 'WhiteboardApp:signup' 2 %}">Student Sign up</a>
 </div>
-<!-- jQuery -->
-{#<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>#}
-<!-- Bootstrap JavaScript -->
-{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>#}
-<script src="{% static 'js/login.js' %}"></script>
 </body>
 </html>

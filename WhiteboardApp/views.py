@@ -16,6 +16,7 @@ from django.conf import settings
 from django.http import FileResponse
 from cryptography.fernet import Fernet
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Instructor Views
 
@@ -558,6 +559,10 @@ def main_banner(request):
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password. Please try again.")
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         # Retrieve the username and password from the form
