@@ -106,6 +106,7 @@
                                            name="{{ form.phone_number.html_name }}"
                                            placeholder="e.x 226-961-1111"
                                            value="{{ form.phone_number.value|default:'' }}">
+                                    <button type="button" id="verify-phone-button" class="btn btn-primary btn-sm">Verify</button>
                                 </div>
                             </div>
                         </div>
@@ -221,6 +222,14 @@
                 }
             }
         });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#verify-phone-button").click(function() {
+             var phoneNumber = $("#{{ form.phone_number.id_for_label }}").val();
+              window.location.href = "{% url 'WhiteboardApp:verify_phone_number' %}?phone_number=" + phoneNumber;
+    });
+});
     </script>
 
 {% endblock %}

@@ -1,7 +1,9 @@
 import random
 
 from django.contrib.auth import authenticate, login
+from django.contrib import auth
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+
 from WhiteboardApp.models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
     Progress
 from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
@@ -565,16 +567,21 @@ class CustomLoginView(LoginView):
         # Retrieve the username and password from the form
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
-
         # Encrypt the clear-text username and password(using sample key)
         key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
         fernet = Fernet(key)
+
+        user = auth.authenticate(self.request, username=username, password=password)
+
         encrypted_username = fernet.encrypt(username.encode()).decode()
         encrypted_password = fernet.encrypt(password.encode()).decode()
+        encrypted_user_id = fernet.encrypt(str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
 
         response = super().form_valid(form)  # Call the parent method to get the original response
+
         response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
         response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
+        response.set_cookie('user_id', encrypted_user_id, max_age=3600)
         return response
 
 
@@ -585,6 +592,7 @@ class CustomLogoutView(LogoutView):
         response = super().dispatch(request, *args, **kwargs)
         response.delete_cookie('username')
         response.delete_cookie('password')
+        response.delete_cookie('user_id')
         return response
 
 
@@ -743,17 +751,35 @@ def phone_verification(request):
     # ... rest of the function ...
 
 def verify_phone_number(request):
+
     if request.method == 'POST':
         entered_code = request.POST.get('code')
         if entered_code == request.session.get('verification_code'):
-            # The verification code is correct, continue with the sign-up process
-            # ... sign-up logic ...
             # Don't forget to delete the phone number and verification code from the session
             del request.session['phone_number']
             del request.session['verification_code']
+            user_id = request.session['user_id']  # assuming the user id is stored in the session
+            return redirect('student_update_by_userid', user_id=user_id)  # replace with actual URL name and argument
         else:
             # The verification code is incorrect, show an error
-            return render(request, 'verify_phone_number.html', {'error': 'The entered code is incorrect.'})
+            return render(request, 'VerificationTemplates/verify_phone_number.html', {'error': 'The entered code is incorrect.'})
+
+
+    elif request.method == 'GET':
+        # Retrieve the phone number from the GET parameters
+        phone_number = request.GET.get('phone_number', '')
+        if phone_number:
+            # Generate a 6-digit verification code
+            verification_code = str(random.randint(100000, 999999))
+            # Send the verification code to the user's phone
+            send_sms_verification(phone_number, verification_code)
+            # Store the phone number and verification code in the session
+            request.session['phone_number'] = phone_number
+            request.session['verification_code'] = verification_code
+            return render(request, 'VerificationTemplates/student_update_by_userid.html', {'phone_number': phone_number})
+        else:
+            return render(request, 'VerificationTemplates/verify_phone_number.html',
+                          {'error': 'No phone number provided.'})
     else:
-        return render(request, 'verify_phone_number.html')
+        return render(request, 'VerificationTemplates/verify_phone_number.html')
 
