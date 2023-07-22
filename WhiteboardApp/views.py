@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from .models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
     Progress
-from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
+from .forms import InstructorForm, CourseForm, MembershipForm, StudentForm, \
     EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm
 import os
 from django.contrib.auth.views import LoginView, LogoutView
@@ -15,7 +15,6 @@ from django.conf import settings
 
 from django.http import FileResponse
 from cryptography.fernet import Fernet
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 # Instructor Views
@@ -210,43 +209,46 @@ def membership_update(request, pk):
 # Payment Views
 
 
-def payment_list(request):
-    payments = Payment.objects.all()
-    return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
+# def payment_list(request):
+#     payments = Payment.objects.all()
+#     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
+
+
+
+
+
+# def payment_detail(request, pk):
+#     payment = get_object_or_404(Payment, pk=pk)
+#     return render(request, 'PaymentTemplates/payment_detail.html', {'payment': payment})
+#
+#
+# def payment_create(request):
+#     if request.method == 'POST':
+#         form = PaymentForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('WhiteboardApp:payment-list')
+#     else:
+#         form = PaymentForm()
+#     return render(request, 'PaymentTemplates/payment_create.html', {'form': form})
+
+
+# def payment_update(request, pk):
+#     payment = get_object_or_404(Payment, pk=pk)
+#     if request.method == 'POST':
+#         form = PaymentForm(request.POST, instance=payment)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('WhiteboardApp:payment-list')
+#     else:
+#         form = PaymentForm(instance=payment)
+#     return render(request, 'PaymentTemplates/payment_update.html', {'form': form})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
 def payment_list_of_student(request, student_id):
     payments = Payment.objects.filter(student_id=student_id)
     return render(request, 'PaymentTemplates/payment_list.html', {'payments': payments})
-
-
-def payment_detail(request, pk):
-    payment = get_object_or_404(Payment, pk=pk)
-    return render(request, 'PaymentTemplates/payment_detail.html', {'payment': payment})
-
-
-def payment_create(request):
-    if request.method == 'POST':
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('WhiteboardApp:payment-list')
-    else:
-        form = PaymentForm()
-    return render(request, 'PaymentTemplates/payment_create.html', {'form': form})
-
-
-def payment_update(request, pk):
-    payment = get_object_or_404(Payment, pk=pk)
-    if request.method == 'POST':
-        form = PaymentForm(request.POST, instance=payment)
-        if form.is_valid():
-            form.save()
-            return redirect('WhiteboardApp:payment-list')
-    else:
-        form = PaymentForm(instance=payment)
-    return render(request, 'PaymentTemplates/payment_update.html', {'form': form})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
@@ -295,8 +297,7 @@ def process_payment_stripe(request):
                 request.session['card_number'] = card_number
                 request.session['expiration_date'] = expiration_date
 
-                return render(request, 'PaymentTemplates/payment_Success.html',
-                              {'amount': amount, 'currency': currency})
+                return render(request, 'PaymentTemplates/payment_Success.html', {'amount': amount, 'currency': currency})
 
             except stripe.error.CardError as e:
                 error_message = e.error.message
