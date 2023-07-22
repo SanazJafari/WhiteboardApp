@@ -32,7 +32,10 @@ This is a Django app for the Internet Application Course. The followings are som
                                                  instructor course management detail
                                                
 ![9_instructor_course_management_detail](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/849e2aa5-e393-4773-b22e-f0c4d0846122)
- 
+                                              
+                                                      Make a Payment
+ ![4_make_a_payment](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/93c19b0c-bf96-417f-88e2-2b3572594511)
+
                                                       course creation
                                                       
 ![10_course_creation](https://github.com/SanazJafari/WhiteboardApp/assets/115330657/b1d365c2-44de-41d1-a029-558ae29d5cdb)
