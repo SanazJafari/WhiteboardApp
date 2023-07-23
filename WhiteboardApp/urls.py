@@ -97,4 +97,7 @@ urlpatterns = [
          name='complete-content_for_student'),
     path('course/<int:course_id>/progress/', views.course_progress, name='course-progress'),
 
+    # Contact Us Urls
+    path('contact_us/', views.contact_us, name='contact-us'),
+
 ]

@@ -144,10 +144,20 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 LOGIN_URL = 'WhiteboardApp:login_post'
 LOGIN_REDIRECT_URL = 'WhiteboardApp:main_banner'
 
+# Stripe settings
 STRIPE_PUBLIC_KEY = 'pk_test_51NS9eOHitL9rNw3gWw65ZPSFcvUg9tnkcjb0M3W7t24Vgm9xLALSy2p4zbxcrkDY1AMQgf9nQoXVWqKmwGPOexFX00dKE3R2ay'
 STRIPE_SECRET_KEY = 'sk_test_51NS9eOHitL9rNw3g7XnjlVvsA6msTP0SaRBS89RPl7BKBGPHrjsE7W2R1aXM1oEkwY2QyOPVYBn6H6LZTG5nHoBj00OYaT28EI'
 
+# Twilio settings
 TWILIO_ACCOUNT_SID = 'ACb3b88c505441e68232a84742fc55a34c'
 TWILIO_AUTH_TOKEN = '54d06764fff943dd4bfb4b7b0944f3bf'
 TWILIO_FROM_NUMBER = '+16206791334'
 TWILIO_TO_NUMBER = '+12267243681'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'whiteboard.internetapplication@gmail.com'
+EMAIL_HOST_PASSWORD = 'sarezeosvfwvsxpe'

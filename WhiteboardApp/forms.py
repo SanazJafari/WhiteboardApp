@@ -86,3 +86,8 @@ class PhoneVerificationForm(forms.ModelForm):
         widgets = {
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
         }
+
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(required=True)
+    message = forms.CharField(widget=forms.Textarea, required=True)

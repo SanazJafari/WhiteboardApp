@@ -2,15 +2,16 @@ import random
 
 from django.contrib.auth import authenticate, login
 from django.contrib import auth
+from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
 from WhiteboardApp.models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
     Progress
 from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
-    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm
+    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm, ContactForm
 import os
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import JsonResponse
+from django.http import JsonResponse, BadHeaderError, HttpResponse
 import datetime
 from django.core.paginator import Paginator
 
@@ -746,7 +747,8 @@ def phone_verification(request):
             return redirect('WhiteboardApp:verify_phone_number')
     else:
         form = PhoneVerificationForm()
-    return render(request, 'VerificationTemplates/verify_phone_number.html', {'form': form, 'pageTitle': 'Phone Verification'})
+    return render(request, 'VerificationTemplates/verify_phone_number.html',
+                  {'form': form, 'pageTitle': 'Phone Verification'})
 
     # ... rest of the function ...
 
@@ -762,7 +764,8 @@ def verify_phone_number(request):
             return redirect('student_update_by_userid', user_id=user_id)  # replace with actual URL name and argument
         else:
             # The verification code is incorrect, show an error
-            return render(request, 'VerificationTemplates/verify_phone_number.html', {'error': 'The entered code is incorrect.'})
+            return render(request, 'VerificationTemplates/verify_phone_number.html',
+                          {'error': 'The entered code is incorrect.'})
 
 
     elif request.method == 'GET':
@@ -776,10 +779,39 @@ def verify_phone_number(request):
             # Store the phone number and verification code in the session
             request.session['phone_number'] = phone_number
             request.session['verification_code'] = verification_code
-            return render(request, 'VerificationTemplates/student_update_by_userid.html', {'phone_number': phone_number})
+            return render(request, 'StudentTemplates/student_update_by_userid.html', {'phone_number': phone_number})
         else:
             return render(request, 'VerificationTemplates/verify_phone_number.html',
                           {'error': 'No phone number provided.'})
     else:
         return render(request, 'VerificationTemplates/verify_phone_number.html')
 
+
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- Contact Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+def contact_us(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            from_email = request.user.email
+
+            try:
+                email = EmailMessage(
+                    subject,
+                    message,
+                    from_email,
+                    [settings.EMAIL_HOST_USER],
+                    reply_to=[from_email],
+                )
+                email.send()
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            # Show a message that the email has been sent successfully, and redirect to the Contact Us page
+            messages.success(request, 'Your message has been sent successfully.')
+            return redirect('WhiteboardApp:contact-us')
+
+    else:
+        form = ContactForm()
+    return render(request, 'ContactUsTemplates/ContactUs.html', {'form': form})
