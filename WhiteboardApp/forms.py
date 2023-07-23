@@ -47,7 +47,7 @@ class GradeForm(forms.ModelForm):
         model = Grade
         fields = ['student', 'course', 'grade']
 
-
+# Signup form extendinding UserCreationForm class 
 class SignUpForm(UserCreationForm):
     class Meta:
         model = User
