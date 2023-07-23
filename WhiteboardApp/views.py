@@ -24,6 +24,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from twilio.rest import Client
 
+
 # Instructor Views
 
 
@@ -163,6 +164,7 @@ def course_detail(request, pk):
                                                                   'has_enrollment_permission': has_enrollment_permission,
                                                                   'is_current_instructor_course': is_current_instructor_course,
                                                                   'completed_contents': student_completed_contents})
+
 
 @login_required(login_url="WhiteboardApp:login_post")
 def course_create(request):
@@ -388,6 +390,7 @@ def enrollment_list(request):
     enrollments = Enrollment.objects.all()
     return render(request, 'EnrolmentTemplates/Enrollment_list.html', {'enrollments': enrollments})
 
+
 @login_required(login_url="WhiteboardApp:login_post")
 def enrollment_list_of_student(request, student_id):
     enrollments = get_list_or_404(Enrollment, student_id=student_id)
@@ -576,7 +579,8 @@ class CustomLoginView(LoginView):
 
         encrypted_username = fernet.encrypt(username.encode()).decode()
         encrypted_password = fernet.encrypt(password.encode()).decode()
-        encrypted_user_id = fernet.encrypt(str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
+        encrypted_user_id = fernet.encrypt(
+            str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
 
         response = super().form_valid(form)  # Call the parent method to get the original response
 
@@ -726,10 +730,11 @@ def send_sms_verification(phone_number, verification_code):
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
-        from_= settings.TWILIO_FROM_NUMBER,  # your Twilio number
+        from_=settings.TWILIO_FROM_NUMBER,  # your Twilio number
         body=f'Your verification code is {verification_code}',
-        to= settings.TWILIO_TO_NUMBER
+        to=settings.TWILIO_TO_NUMBER
     )
+
 
 def phone_verification(request):
     if request.method == 'POST':
@@ -752,8 +757,8 @@ def phone_verification(request):
 
     # ... rest of the function ...
 
-def verify_phone_number(request):
 
+def verify_phone_number(request):
     if request.method == 'POST':
         entered_code = request.POST.get('code')
         if entered_code == request.session.get('verification_code'):
@@ -788,6 +793,7 @@ def verify_phone_number(request):
 
 
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- Contact Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+@login_required(login_url="WhiteboardApp:login_post")
 def contact_us(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -815,3 +821,5 @@ def contact_us(request):
     else:
         form = ContactForm()
     return render(request, 'ContactUsTemplates/ContactUs.html', {'form': form})
+
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- About Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #

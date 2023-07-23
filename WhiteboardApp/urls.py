@@ -100,4 +100,7 @@ urlpatterns = [
     # Contact Us Urls
     path('contact_us/', views.contact_us, name='contact-us'),
 
+    #About Us Urls
+    path('about_us/', views.about_us, name='about-us'),
+
 ]
