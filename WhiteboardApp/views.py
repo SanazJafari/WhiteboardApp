@@ -191,8 +191,6 @@ def course_update(request, pk):
 
 
 # Membership Views
-
-
 def membership_list(request):
     memberships = Membership.objects.all()
     return render(request, 'MembershipTemplates/membership_list.html', {'memberships': memberships})
@@ -755,7 +753,6 @@ def phone_verification(request):
     return render(request, 'VerificationTemplates/verify_phone_number.html',
                   {'form': form, 'pageTitle': 'Phone Verification'})
 
-    # ... rest of the function ...
 
 
 def verify_phone_number(request):
@@ -822,4 +819,8 @@ def contact_us(request):
         form = ContactForm()
     return render(request, 'ContactUsTemplates/ContactUs.html', {'form': form})
 
+
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- About Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+@login_required(login_url="WhiteboardApp:login_post")
+def about_us(request):
+    return render(request, 'AboutUsTemplates/AboutUs.html')

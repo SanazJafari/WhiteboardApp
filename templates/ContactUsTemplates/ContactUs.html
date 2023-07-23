@@ -1,29 +1,59 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="{% static 'css/contact-us.css' %}">
+</head>
 
-{% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="mb-0">Contact Us</h3>
-                    </div>
-                    <div class="card-body">
-                        <form class="form" role="form" method="post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="id_subject">Subject</label>
-                                <input id="id_subject" class="form-control" type="text" name="{{ form.subject.name }}" placeholder="Enter Subject">
-                            </div>
-                            <div class="form-group">
-                                <label for="id_message">Message</label>
-                                <textarea id="id_message" class="form-control" name="{{ form.message.name }}" placeholder="Enter Message"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-success btn-lg float-right">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <body>
+        <div class="container">
+          <div class="row header">
+            <h1>CONTACT US &nbsp;</h1>
+            <h3>Fill out the form below to learn more!</h3>
+          </div>
+          <div class="row body">
+            <form class="form" role="form" method="post">
+                {% csrf_token %}
+              <ul>
+                <li>
+                  <p class="left">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" name="first_name" placeholder="Ali" />
+                  </p>
+                  <p class="pull-right">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" name="last_name" placeholder="Shahbazi" />
+                  </p>
+                </li>
+
+                <li>
+                  <p>
+                    <label for="email">Email <span class="req">*</span></label>
+                    <input type="email" name="email" placeholder="shahbaz7@uwindsor.ca" />
+                  </p>
+                    <p class="pull-right">
+                        <label for="subject">Subject <span class="req">*</span></label>
+                    <input type="text" name="subject" placeholder="Amazing website!" />
+                  </p>
+                </li>
+                <li><div class="divider"></div></li>
+                <li>
+                    <label for="comments">Comments <span class="req">*</span></label>
+                  <textarea cols="46" rows="3" name="comments"></textarea>
+                </li>
+
+                <li>
+                  <input class="btn btn-submit" type="submit" value="Submit" />
+                  <small>or press <strong>enter</strong></small>
+                </li>
+
+              </ul>
+            </form>
+          </div>
         </div>
-    </div>
-{% endblock %}
+    </body>
+</html>
+
