@@ -488,6 +488,8 @@ def grade_create_in_course(request, course_id):
         if form.is_valid():
             form.save()
             return redirect('WhiteboardApp:grade_list_of_course', course_id)
+        else:
+            return render(request, 'GradeTemplates/Grade_create.html', {'form': form, 'course_id': course_id})
     else:
         form = GradeForm()
         course = Course.objects.filter(pk=course_id).first()  # Fetch the first course object
