@@ -1,4 +1,3 @@
-from bson.json_util import default
 from django.db import models
 from django.contrib.auth.models import User
 
