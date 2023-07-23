@@ -412,11 +412,16 @@ def enroll_course(request, course_id):
 @login_required(login_url="WhiteboardApp:login_post")
 def grade_list_of_course(request, course_id):
     grades = Grade.objects.filter(course_id=course_id)
-    return render(request, 'GradeTemplates/Grade_list.html', {'grades': grades, 'course_id': course_id})
+    context = {
+        'grades': grades,
+        'course_id': course_id
+    }
+    return render(request, 'GradeTemplates/Grade_list.html', context)
 
 
 def grade_detail(request, pk):
     grade = get_object_or_404(Grade, pk=pk)
+    print(grade)
     return render(request, 'GradeTemplates/Grade_detail.html', {'grade': grade})
 
 
@@ -450,6 +455,7 @@ def grade_update_for_student_in_course(request, student_id, course_id):
             return redirect('WhiteboardApp:grade_list_of_course', course_id)
     else:
         form = GradeForm()
+        form.fields['grade'] = grade.grade
         course = Course.objects.filter(pk=course_id)  # Fetch course
         student = Student.objects.filter(pk=student_id)  # Fetch student
         form.fields['course'].queryset = course  # Set the queryset of the 'course' field in the form
