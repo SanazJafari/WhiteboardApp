@@ -77,11 +77,16 @@
                     {% if user.instructor and is_current_instructor_course == True %}
                         <a href="{% url 'WhiteboardApp:course_student_list_pagination' course.id %}"
                            class="btn btn-info btn-sm">
-                            <i class="fa-solid fa-graduation-cap"></i> Course Students
+                            <i class="fa-solid fa-users"></i> Course Students
                         </a>
                         <a href="{% url 'WhiteboardApp:course-progress' course.pk %}"
                            class="btn btn-info btn-sm">
                             <i class="fa-solid fa-list-check"></i> Students Progress
+                        </a>
+
+                        <a href="{% url 'WhiteboardApp:grade_list_of_course' course.pk %}"
+                           class="btn btn-info btn-sm my-3">
+                            <i class="fa-solid fa-graduation-cap"></i> Students Grades
                         </a>
                     {% endif %}
                 {% endif %}
