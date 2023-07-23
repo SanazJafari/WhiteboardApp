@@ -568,20 +568,20 @@ class CustomLoginView(LoginView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
         # Encrypt the clear-text username and password(using sample key)
-        key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
+        key = settings.ENCRYPTED_KEY
         fernet = Fernet(key)
 
         user = auth.authenticate(self.request, username=username, password=password)
 
+        self.request.session['user_id'] = user.id
+
         encrypted_username = fernet.encrypt(username.encode()).decode()
         encrypted_password = fernet.encrypt(password.encode()).decode()
-        encrypted_user_id = fernet.encrypt(str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
 
         response = super().form_valid(form)  # Call the parent method to get the original response
 
         response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
         response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
-        response.set_cookie('user_id', encrypted_user_id, max_age=3600)
         return response
 
 
@@ -755,11 +755,32 @@ def verify_phone_number(request):
     if request.method == 'POST':
         entered_code = request.POST.get('code')
         if entered_code == request.session.get('verification_code'):
-            # Don't forget to delete the phone number and verification code from the session
+
+            encrypted_user_id = request.COOKIES.get('user_id')
+            key = settings.ENCRYPTED_KEY
+            fernet = Fernet(key)
+            user_id = fernet.decrypt(encrypted_user_id.encode()).decode()
+
+            # Retrieve the User instance
+            user = User.objects.get(id=user_id)
+
+            # Retrieve the Student instance associated with the user
+            student = Student.objects.get(user=user)
+
+            # Set the phone_number and save
+            student.phone_number = request.session['phone_number']
+            student.save()
+
             del request.session['phone_number']
             del request.session['verification_code']
-            user_id = request.session['user_id']  # assuming the user id is stored in the session
-            return redirect('WhiteboardApp:instructor-detail-by-userId', user_id=user_id)  # replace with actual URL name and argument
+            # user_id = request.session.get('user_id')  # Retrieve user_id from session
+            # Get the user_id from the cookie and decode it using settings.ENCRYPTED_KEY key
+
+
+            print(user_id)
+            # Send the user_id as the argument to the student-update-by-userId view
+            return redirect('WhiteboardApp:student-update-by-userId', userid=user_id)  # replace with actual URL name and argument
+
         else:
             # The verification code is incorrect, show an error
             return render(request, 'VerificationTemplates/verify_phone_number.html', {'error': 'The entered code is incorrect.'})
