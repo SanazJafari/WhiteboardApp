@@ -23,6 +23,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from twilio.rest import Client
 
+
 # Instructor Views
 
 
@@ -162,6 +163,7 @@ def course_detail(request, pk):
                                                                   'has_enrollment_permission': has_enrollment_permission,
                                                                   'is_current_instructor_course': is_current_instructor_course,
                                                                   'completed_contents': student_completed_contents})
+
 
 @login_required(login_url="WhiteboardApp:login_post")
 def course_create(request):
@@ -387,6 +389,7 @@ def enrollment_list(request):
     enrollments = Enrollment.objects.all()
     return render(request, 'EnrolmentTemplates/Enrollment_list.html', {'enrollments': enrollments})
 
+
 @login_required(login_url="WhiteboardApp:login_post")
 def enrollment_list_of_student(request, student_id):
     enrollments = get_list_or_404(Enrollment, student_id=student_id)
@@ -450,12 +453,14 @@ def enroll_course(request, course_id):
 @login_required(login_url="WhiteboardApp:login_post")
 def grade_list_of_course(request, course_id):
     grades = Grade.objects.filter(course_id=course_id)
-    return render(request, 'GradeTemplates/Grade_list.html', {'grades': grades, 'course_id': course_id})
+    return render(request, 'GradeTemplates/Grade_list.html',
+                  {'grades': grades, 'course_id': course_id})
 
 
 def grade_detail(request, pk):
     grade = get_object_or_404(Grade, pk=pk)
-    return render(request, 'GradeTemplates/Grade_detail.html', {'grade': grade})
+    return render(request, 'GradeTemplates/Grade_detail.html',
+                  {'grade': grade})
 
 
 def grade_update(request, pk):
@@ -471,7 +476,8 @@ def grade_update(request, pk):
         student = Student.objects.filter(pk=grade.student_id)  # Fetch student
         form.fields['course'].queryset = course  # Set the queryset of the 'course' field in the form
         form.fields['student'].queryset = student  # Set the queryset of the 'student' field in the form
-    return render(request, 'GradeTemplates/Grade_update.html', {'form': form, 'course_id': grade.course.id})
+    return render(request, 'GradeTemplates/Grade_update.html',
+                  {'form': form, 'course_id': grade.course.id})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
@@ -492,7 +498,8 @@ def grade_update_for_student_in_course(request, student_id, course_id):
         student = Student.objects.filter(pk=student_id)  # Fetch student
         form.fields['course'].queryset = course  # Set the queryset of the 'course' field in the form
         form.fields['student'].queryset = student  # Set the queryset of the 'student' field in the form
-    return render(request, 'GradeTemplates/Grade_update.html', {'form': form, 'course_id': course.first().id})
+    return render(request, 'GradeTemplates/Grade_update.html',
+                  {'form': form, 'course_id': course.first().id})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
@@ -508,7 +515,8 @@ def grade_create_for_student_in_course(request, student_id, course_id):
         student = Student.objects.filter(pk=student_id)  # Fetch student
         form.fields['course'].queryset = course  # Set the queryset of the 'course' field in the form
         form.fields['student'].queryset = student  # Set the queryset of the 'student' field in the form
-    return render(request, 'GradeTemplates/Grade_create.html', {'form': form, 'course_id': course.first().id})
+    return render(request, 'GradeTemplates/Grade_create.html',
+                  {'form': form, 'course_id': course.first().id})
 
 
 @login_required(login_url="WhiteboardApp:login_post")
@@ -525,7 +533,8 @@ def grade_create_in_course(request, course_id):
         form.fields['course'].queryset = Course.objects.filter(
             pk=course_id)  # Set the queryset of the 'course' field in the form
         form.fields['student'].queryset = students  # Set the queryset of the 'student' field in the form
-    return render(request, 'GradeTemplates/Grade_create.html', {'form': form, 'course_id': course_id})
+    return render(request, 'GradeTemplates/Grade_create.html',
+                  {'form': form, 'course_id': course_id})
 
 
 def main_banner(request):
@@ -716,19 +725,19 @@ def course_progress(request, course_id):
     return render(request, 'CourseTemplates/course_students_progress.html', context)
 
 
-# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- SMS verification -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- SMS Verification -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
 def send_sms_verification(phone_number, verification_code):
-    # Your Twilio account SID and Auth Token
     account_sid = settings.TWILIO_ACCOUNT_SID
     auth_token = settings.TWILIO_AUTH_TOKEN
 
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
-        from_= settings.TWILIO_FROM_NUMBER,  # your Twilio number
-        body=f'Your verification code is {verification_code}',
-        to= settings.TWILIO_TO_NUMBER
+        from_=settings.TWILIO_FROM_NUMBER,  # your Twilio number
+        body=f'Your verification code in WhiteBoard website is: {verification_code}',
+        to=settings.TWILIO_TO_NUMBER
     )
+
 
 def phone_verification(request):
     if request.method == 'POST':
@@ -746,12 +755,11 @@ def phone_verification(request):
             return redirect('WhiteboardApp:verify_phone_number')
     else:
         form = PhoneVerificationForm()
-    return render(request, 'VerificationTemplates/verify_phone_number.html', {'form': form, 'pageTitle': 'Phone Verification'})
+    return render(request, 'VerificationTemplates/verify_phone_number.html',
+                  {'form': form, 'pageTitle': 'Phone Verification'})
 
-    # ... rest of the function ...
 
 def verify_phone_number(request):
-
     if request.method == 'POST':
         entered_code = request.POST.get('code')
         if entered_code == request.session.get('verification_code'):
@@ -773,17 +781,16 @@ def verify_phone_number(request):
 
             del request.session['phone_number']
             del request.session['verification_code']
-            # user_id = request.session.get('user_id')  # Retrieve user_id from session
-            # Get the user_id from the cookie and decode it using settings.ENCRYPTED_KEY key
-
 
             print(user_id)
             # Send the user_id as the argument to the student-update-by-userId view
-            return redirect('WhiteboardApp:student-update-by-userId', userid=user_id)  # replace with actual URL name and argument
+            return redirect('WhiteboardApp:student-update-by-userId',
+                            userid=user_id)  # replace with actual URL name and argument
 
         else:
             # The verification code is incorrect, show an error
-            return render(request, 'VerificationTemplates/verify_phone_number.html', {'error': 'The entered code is incorrect.'})
+            return render(request, 'VerificationTemplates/verify_phone_number.html',
+                          {'error': 'The entered code is incorrect.'})
 
 
     elif request.method == 'GET':
@@ -791,16 +798,22 @@ def verify_phone_number(request):
         phone_number = request.GET.get('phone_number', '')
         if phone_number:
             # Generate a 6-digit verification code
-            verification_code = str(random.randint(100000, 999999))
+            verification_code = str(random.randint(100_000, 999_999))
             # Send the verification code to the user's phone
             send_sms_verification(phone_number, verification_code)
             # Store the phone number and verification code in the session
             request.session['phone_number'] = phone_number
             request.session['verification_code'] = verification_code
-            return render(request, 'VerificationTemplates/verify_phone_number.html', {'phone_number': phone_number})
+
+            return render(request, 'VerificationTemplates/verify_phone_number.html',
+                          {'phone_number': phone_number})
         else:
             return render(request, 'VerificationTemplates/verify_phone_number.html',
                           {'error': 'No phone number provided.'})
     else:
         return render(request, 'VerificationTemplates/verify_phone_number.html')
 
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- Contact Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+
+
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- About Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
