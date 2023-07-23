@@ -759,7 +759,7 @@ def verify_phone_number(request):
             del request.session['phone_number']
             del request.session['verification_code']
             user_id = request.session['user_id']  # assuming the user id is stored in the session
-            return redirect('student_update_by_userid', user_id=user_id)  # replace with actual URL name and argument
+            return redirect('WhiteboardApp:instructor-detail-by-userId', user_id=user_id)  # replace with actual URL name and argument
         else:
             # The verification code is incorrect, show an error
             return render(request, 'VerificationTemplates/verify_phone_number.html', {'error': 'The entered code is incorrect.'})
@@ -776,7 +776,7 @@ def verify_phone_number(request):
             # Store the phone number and verification code in the session
             request.session['phone_number'] = phone_number
             request.session['verification_code'] = verification_code
-            return render(request, 'VerificationTemplates/student_update_by_userid.html', {'phone_number': phone_number})
+            return render(request, 'VerificationTemplates/verify_phone_number.html', {'phone_number': phone_number})
         else:
             return render(request, 'VerificationTemplates/verify_phone_number.html',
                           {'error': 'No phone number provided.'})
