@@ -432,6 +432,8 @@ def grade_update(request, pk):
         if form.is_valid():
             form.save()
             return redirect('WhiteboardApp:grade_list_of_course', grade.course.id)
+        else:
+            return render(request, 'GradeTemplates/Grade_update.html', {'form': form, 'course_id': grade.course.id})
     else:
         form = GradeForm(instance=grade)
         course = Course.objects.filter(pk=grade.course_id)  # Fetch course
