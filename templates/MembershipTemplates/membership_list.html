@@ -6,10 +6,16 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Membership List</h1>
-    {% for membership in memberships %}
-        <h2><a href="{% url 'WhiteboardApp:membership-detail' membership.pk %}">{{ membership.get_name_display }}</a>
-        </h2>
-        <p>{{ membership.description }}</p>
-    {% endfor %}
+
+    <h1 style="margin-bottom: 30px; margin-top: 30px; ">Available Memberships</h1>
+    <div class="memberships-container mb-4">
+        {% for membership in memberships %}
+            <div class="membership-card pb-4">
+                <p class="membership-title">{{ membership.get_name_display }}</p>
+                <p><strong>Price:</strong> <span class="membership-price">${{ membership.price }}</span></p>
+                <p><strong>Benefits:</strong> {{ membership.benefits }}</p>
+                <a class="buy-button" href="{% url 'WhiteboardApp:process_payment_stripe' membership.id %}">Buy Membership</a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -41,7 +41,7 @@
                                     Enroll
                                 </button>
                             {% else %}
-                                <a href="#" class="btn btn-secondary btn-sm" disabled
+                                <a href="{% url 'WhiteboardApp:enroll-course' course.pk %}" class="btn btn-secondary btn-sm" disabled
                                    title="you reached the quota and can not enroll in another course">Enroll</a>
                             {% endif %}
 
@@ -145,7 +145,7 @@
                             <rect width="100%" height="100%" fill="#007aff"></rect>
                         </svg>
                         <i class="fa-solid fa-marker" style="margin-right: 10px;"></i>
-                        <strong class="me-auto"> Mark </strong>
+                        <strong class="me-auto"> Grades </strong>
                     </div>
                     <div class="toast-body">
                         {% if grade.grade %}

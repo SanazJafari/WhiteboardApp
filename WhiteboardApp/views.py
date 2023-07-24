@@ -257,57 +257,57 @@ def payment_update(request, pk):
 
 
 @login_required(login_url="WhiteboardApp:login_post")
-def process_payment_stripe(request):
+def process_payment_stripe(request, pk):
     if request.method == 'POST':
         stripe.api_key = settings.STRIPE_SECRET_KEY
         form = PaymentFormStripe(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            currency = form.cleaned_data['currency']
-            card_number = form.cleaned_data['card_number']
-            expiration_date = form.cleaned_data['expiration_date']
-            cvc = form.cleaned_data['cvc']
-            date_values = expiration_date.split('/')
-            month = date_values[0]
-            year = date_values[1]
-            try:
-                # this one is only in use for real case payment
-                # Create a payment method using Stripe Elements
-                # payment_method = stripe.PaymentMethod.create(
-                #     type='card',
-                #     card={
-                #         'number': '4242 4242 4242 4242 ',
-                #         'exp_month': month,
-                #         'exp_year': year,
-                #         'cvc': cvc
-                #     }
-                # )
 
-                # Create a payment intent and confirm the payment
-                payment_intent = stripe.PaymentIntent.create(
-                    amount=int(amount * 100),  # Convert amount to cents
-                    currency=currency,
-                    # payment_method= payment_method.id,
-                    payment_method="pm_card_mastercard",
-                    confirm=True
-                )
+        stripe_token = request.POST['stripeToken']
 
-                # Handle successful payment
-                student = form.cleaned_data['student']
-                payment = Payment(student_id=student.id, amount=amount, currency=currency,
-                                  card_number=card_number, expiration_date=expiration_date, cvc=cvc)
-                payment.save()
+        # amount = form.cleaned_data['amount']
+        # currency = form.cleaned_data['currency']
+        # card_number = form.cleaned_data['card_number']
+        # expiration_date = form.cleaned_data['expiration_date']
+        # cvc = form.cleaned_data['cvc']
+        # date_values = expiration_date.split('/')
+        # month = date_values[0]
+        # year = date_values[1]
+        try:
+            # this one is only in use for real case payment
+            # Create a payment method using Stripe Elements
+            # payment_method = stripe.PaymentMethod.create(
+            #     type='card',
+            #     card={
+            #         'number': '4242 4242 4242 4242 ',
+            #         'exp_month': month,
+            #         'exp_year': year,
+            #         'cvc': cvc
+            #     }
+            # )
+            # Create a payment intent and confirm the payment
+            membership = Membership.objects.get(id=pk)
+            payment_intent = stripe.PaymentIntent.create(
+                amount=int(membership.price),  # Convert amount to cents
+                currency='cad',
+                # payment_method= payment_method.id,
+                payment_method="pm_card_mastercard",
+                confirm=True
+            )
 
-                # save card number and expiration_date in session to store for next payments if needed
-                request.session['card_number'] = card_number
-                request.session['expiration_date'] = expiration_date
+            # Handle successful payment
+            # student = form.cleaned_data['student']
+            payment = Payment(student_id=12, amount=membership.price, currency='CAD',card_number='4444', expiration_date='12/24', cvc='321')
+            payment.save()
 
-                return render(request, 'PaymentTemplates/payment_Success.html',
-                              {'amount': amount, 'currency': currency})
+            # save card number and expiration_date in session to store for next payments if needed
+            # request.session['card_number'] = card_number
+            # request.session['expiration_date'] = expiration_date
 
-            except stripe.error.CardError as e:
-                error_message = e.error.message
-                return render(request, 'PaymentTemplates/payment_Error.html', {'error_message': error_message})
+            return render(request, 'PaymentTemplates/payment_Success.html', {'amount': membership.price, 'currency':'cad'})
+
+        except stripe.error.CardError as e:
+            error_message = e.error.message
+            return render(request, 'PaymentTemplates/payment_Error.html', {'error_message': error_message})
     else:
         student = Student.objects.select_related('user').get(user_id=request.user.id)
         payment = Payment(student=student)
@@ -317,7 +317,8 @@ def process_payment_stripe(request):
         expiration_date = request.session.get('expiration_date')
         return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form,
                                                                                'card_number': card_number,
-                                                                               'expiration_date': expiration_date})
+                                                                               'expiration_date': expiration_date,
+                                                                               'stripe_publishable_key': settings.STRIPE_PUBLIC_KEY})
 
 
 # Student Views
@@ -440,6 +441,7 @@ def enroll_course(request, course_id):
         'result': 'Enrollment successful!',
     }
     return JsonResponse(data)
+    # return render(request, 'EnrolmentTemplates/enrollment_message.html')
 
 
 # Grade Views
@@ -588,10 +590,9 @@ class CustomLoginView(LoginView):
     #
     #     response = super().form_valid(form)  # Call the parent method to get the original response
     #
-    #     response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
-    #     response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
-    #     response.set_cookie('user_id', encrypted_user_id, max_age=3600)
-    #     return response
+    # response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
+    # response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
+    # response.set_cookie('user_id', encrypted_user_id, max_age=3600) return response
 
 class CustomLogoutView(LogoutView):
     next_page = 'WhiteboardApp:main_banner'

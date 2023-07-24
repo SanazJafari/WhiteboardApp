@@ -14,7 +14,7 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ['title', 'description', 'instructor', 'start_date', 'end_date', 'is_active', 'syllabus',
-                  'prerequisites', 'avatar', 'additional_data']
+                  'prerequisites', 'avatar']
 
 
 class MembershipForm(forms.ModelForm):

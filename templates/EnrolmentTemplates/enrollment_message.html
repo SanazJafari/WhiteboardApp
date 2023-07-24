@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Enrollment Message{% endblock %}
+
+{% block carousel %}
+{% endblock %}
+
+{% block content %}
+
+  <h1 style="margin-top: 20px;">You have been Enrolled successfully. </h1>
+  <p style="margin-top: 20px;"><strong><a href="javascript:history.back()"> Go Back </a></strong> {{ enrollment.student }} or Go to
+  <a href="{% url 'WhiteboardApp:enrollment-list-of-student' user.student.id %}"> My Courses </a></p>
+
+{% endblock %}

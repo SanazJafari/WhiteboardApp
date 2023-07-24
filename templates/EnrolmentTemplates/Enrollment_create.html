@@ -2,11 +2,14 @@
 
 {% block title %}Create Enrollment{% endblock %}
 
+{% block carousel %}
+{% endblock %}
+
 {% block content %}
-  <h1>Create New Enrollment</h1>
+  <h1 style="margin-top: 20px;">Create New Enrollment</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button style="margin-bottom: 50px;" type="submit" class="btn btn-primary">Create</button>
   </form>
 {% endblock %}
