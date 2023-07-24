@@ -59,6 +59,16 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError("This email is already in use!")
         return email
         
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match. Please try again.")
+        
+        return cleaned_data
+
     widgets = {
             'username': forms.TextInput(attrs={'placeholder': 'Enter your username'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Enter your email'}),
