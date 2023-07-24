@@ -58,7 +58,13 @@ class SignUpForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already in use!")
         return email
-
+        
+    widgets = {
+            'username': forms.TextInput(attrs={'placeholder': 'Enter your username'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Enter your email'}),
+            'password1': forms.PasswordInput(attrs={'placeholder': 'Enter your password'}),
+            'password2': forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}),
+        }
 
 class ContentForm(forms.ModelForm):
     class Meta:
