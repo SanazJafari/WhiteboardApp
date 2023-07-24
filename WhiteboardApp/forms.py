@@ -59,13 +59,6 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError("This email is already in use!")
         return email
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'placeholder': 'Enter your username'})
-        self.fields['email'].widget.attrs.update({'placeholder': 'Enter your email'})
-        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter your password'})
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm your password'})
-
 
 class ContentForm(forms.ModelForm):
     class Meta:

@@ -557,6 +557,7 @@ class CustomLogoutView(LogoutView):
 
 
 def signup_post(request, userType):
+    print(userType)
     if userType == 1:
         page_title = 'Instructor Sign-Up'
     else:
@@ -568,13 +569,14 @@ def signup_post(request, userType):
             user = form.save()
 
             if userType == 1:
-                instructor = Instructor(user_id=user.id)
+                instructor = Instructor(user=user)
                 instructor.save()
             else:
                 student = Student(user_id=user.id)
                 student.save()
             return redirect('WhiteboardApp:login_post')  # Redirect to login page after successful sign-up
     else:
+        #render this on intial basis
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form, 'pageTitle': page_title})
 
