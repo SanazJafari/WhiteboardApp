@@ -25,12 +25,11 @@ class MembershipForm(forms.ModelForm):
 
 class PaymentFormStripe(forms.ModelForm):
     AMOUNT_CHOICES = (
-        ('20', '20 (Gold membership)'),
-        ('10', '10 (Silver membership)'),
-        ('5', '5 (Bronze membership)'),
+        ('20', '20 CAD (Gold membership)'),
+        ('10', '10 CAD (Silver membership)'),
+        ('5', '5 CAD (Bronze membership)'),
     )
     amount = forms.ChoiceField(choices=AMOUNT_CHOICES, required=True)
-    currency = forms.CharField(max_length=3, required=True)
     card_number = forms.CharField(max_length=19, required=True)
     expiration_date = forms.CharField(max_length=5, required=True)
     cvc = forms.CharField(max_length=5, required=True)
@@ -67,7 +66,7 @@ class PaymentFormStripe(forms.ModelForm):
 
     class Meta:
         model = Payment
-        fields = ['student', 'amount', 'currency', 'card_number', 'expiration_date', 'cvc']
+        fields = ['student', 'amount', 'card_number', 'expiration_date', 'cvc']
 
 
 class StudentForm(forms.ModelForm):

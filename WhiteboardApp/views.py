@@ -227,7 +227,6 @@ def process_payment_stripe(request):
             # If the form is valid, the view extracts the required data from the
             # form's cleaned data (data that has been validated and processed by the form):
             amount = form.cleaned_data['amount']
-            currency = form.cleaned_data['currency']
             card_number = form.cleaned_data['card_number']
             expiration_date = form.cleaned_data['expiration_date']
             cvc = form.cleaned_data['cvc']
@@ -251,7 +250,7 @@ def process_payment_stripe(request):
                 # A payment intent is created using Stripe's API to initiate the payment process.
                 payment_intent = stripe.PaymentIntent.create(
                     amount=int(amount) * 100,  # Convert amount to cents
-                    currency=currency,
+                    currency='CAD',
                     # payment_method= payment_method.id,
                     payment_method="pm_card_mastercard",
                     confirm=True
@@ -259,7 +258,7 @@ def process_payment_stripe(request):
 
                 # Handle successful payment
                 student = form.cleaned_data['student']
-                payment = Payment(student_id=student.id, amount=amount, currency=currency,
+                payment = Payment(student_id=student.id, amount=amount, currency='CAD',
                                   card_number=card_number, expiration_date=expiration_date, cvc=cvc)
                 payment.save()
 
@@ -272,7 +271,7 @@ def process_payment_stripe(request):
                 request.session['card_number'] = card_number
                 request.session['expiration_date'] = expiration_date
 
-                return render(request, 'PaymentTemplates/payment_Success.html', {'amount': amount, 'currency': currency})
+                return render(request, 'PaymentTemplates/payment_Success.html', {'amount': amount, 'currency': 'CAD'})
 
             except stripe.error.CardError as e:
                 error_message = e.error.message
