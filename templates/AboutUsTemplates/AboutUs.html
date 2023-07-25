@@ -18,10 +18,15 @@
       </div>
       <div class="divider"></div>
       <div class="name">{{ contributor.name }}</div>
+        <div class="divider"></div>
       <div class="title">{{ contributor.get_major_display }}</div>
+        <div class="divider"></div>
       <div class="bio">{{ contributor.bio }}</div>
+        <div class="divider"></div>
       <div class="description">{{ contributor.description }}</div>
+        <div class="divider"></div>
       <div class="linkedin"><a href="{{ contributor.linkedin }}">LinkedIn</a></div>
+        <div class="divider"></div>
       <div class="university">{{ contributor.university }}</div>
     </div>
     {% endfor %}
