@@ -198,7 +198,8 @@ def membership_list(request):
 
 def membership_detail(request, pk):
     membership = get_object_or_404(Membership, pk=pk)
-    return render(request, 'MembershipTemplates/membership_detail.html', {'membership': membership})
+    student_enrolled_course_count = Enrollment.objects.filter(student_id=request.user.student.id).count()
+    return render(request, 'MembershipTemplates/membership_detail.html', {'membership': membership, 'student_enrolled_course_count': student_enrolled_course_count})
 
 
 def membership_update(request, pk):
@@ -256,67 +257,73 @@ def payment_update(request, pk):
 
 
 @login_required(login_url="WhiteboardApp:login_post")
-def process_payment_stripe(request):
+def process_payment_stripe(request, pk):
     if request.method == 'POST':
         stripe.api_key = settings.STRIPE_SECRET_KEY
         form = PaymentFormStripe(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            currency = form.cleaned_data['currency']
-            card_number = form.cleaned_data['card_number']
-            expiration_date = form.cleaned_data['expiration_date']
-            cvc = form.cleaned_data['cvc']
-            date_values = expiration_date.split('/')
-            month = date_values[0]
-            year = date_values[1]
-            try:
-                # this one is only in use for real case payment
-                # Create a payment method using Stripe Elements
-                # payment_method = stripe.PaymentMethod.create(
-                #     type='card',
-                #     card={
-                #         'number': '4242 4242 4242 4242 ',
-                #         'exp_month': month,
-                #         'exp_year': year,
-                #         'cvc': cvc
-                #     }
-                # )
 
-                # Create a payment intent and confirm the payment
-                payment_intent = stripe.PaymentIntent.create(
-                    amount=int(amount * 100),  # Convert amount to cents
-                    currency=currency,
-                    # payment_method= payment_method.id,
-                    payment_method="pm_card_mastercard",
-                    confirm=True
-                )
+        # amount = form.cleaned_data['amount']
+        stripe_token = request.POST['stripeToken']
+        #currency = form.cleaned_data['currency']
+        #card_number = form.cleaned_data['card_number']  # amount = form.cleaned_data['amount']
+        #expiration_date = form.cleaned_data['expiration_date']  # currency = form.cleaned_data['currency']
+        #cvc = form.cleaned_data['cvc']  # card_number = form.cleaned_data['card_number']
+        #date_values = expiration_date.split('/')  # expiration_date = form.cleaned_data['expiration_date']
+        #month = date_values[0]  # cvc = form.cleaned_data['cvc']
+        #year = date_values[1]  # date_values = expiration_date.split('/')
+        try:  # month = date_values[0]
+            # this one is only in use for real case payment	        # year = date_values[1]
+            # Create a payment method using Stripe Elements	        try:
+            # payment_method = stripe.PaymentMethod.create(	            # this one is only in use for real case payment
+            #     type='card',	            # Create a payment method using Stripe Elements
+            #     card={	            # payment_method = stripe.PaymentMethod.create(
+            #         'number': '4242 4242 4242 4242 ',	            #     type='card',
+            #         'exp_month': month,	            #     card={
+            #         'exp_year': year,	            #         'number': '4242 4242 4242 4242 ',
+            #         'cvc': cvc	            #         'exp_month': month,
+            #     }	            #         'exp_year': year,
+            # )	            #         'cvc': cvc
 
+            #     }
+            # Create a payment intent and confirm the payment	            # )
+            membership = Membership.objects.get(id=pk)
+            print(request.user.student.id)
+            payment_intent = stripe.PaymentIntent.create(  # Create a payment intent and confirm the payment
+                amount=int(membership.price),
+                # Convert amount to cents	            membership = Membership.objects.get(id=pk)
+                currency='cad',
+                payment_method = "pm_card_mastercard",
+                confirm = True
                 # Handle successful payment
-                student = form.cleaned_data['student']
-                payment = Payment(student_id=student.id, amount=amount, currency=currency,
-                                  card_number=card_number, expiration_date=expiration_date, cvc=cvc)
-                payment.save()
+            )
 
-                # save card number and expiration_date in session to store for next payments if needed
-                request.session['card_number'] = card_number
-                request.session['expiration_date'] = expiration_date
+            #student = form.cleaned_data['student']
+            payment = Payment(student_id=request.user.student.id, amount=membership.price, currency='CAD', card_number='4444',
+                              expiration_date='12/24', cvc='321')
+            # student = form.cleaned_data['student']
+            student = get_object_or_404(Student, user_id=request.user.id)
+            student.membership_id = pk
+            student.save()
+            payment.save()
 
-                return render(request, 'PaymentTemplates/payment_Success.html',
-                              {'amount': amount, 'currency': currency})
+            # request.session['expiration_date'] = expiration_date
+            return render(request, 'PaymentTemplates/payment_Success.html',
+                          {'amount': membership.price, 'currency': 'CAD'})
 
-            except stripe.error.CardError as e:
-                error_message = e.error.message
-                return render(request, 'PaymentTemplates/payment_Error.html', {'error_message': error_message})
+        except stripe.error.CardError as e:
+            error_message = e.error.message
+            return render(request, 'PaymentTemplates/payment_Error.html', {'error_message': error_message})
     else:
-        student = Student.objects.select_related('user').get(user_id=request.user.id)
-        payment = Payment(student=student)
-        form = PaymentFormStripe(instance=payment)
+        # student = Student.objects.select_related('user').get(user_id=request.user.id)
+        # payment = Payment(student=student)
+        form = PaymentFormStripe()
         # read card_number and expiration_date from session and send to from
         card_number = request.session.get('card_number')
         expiration_date = request.session.get('expiration_date')
         return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form,
                                                                                'card_number': card_number,
-                                                                               'expiration_date': expiration_date})
+                                                                               'expiration_date': expiration_date,
+                                                                               'stripe_publishable_key': settings.STRIPE_PUBLIC_KEY})
 
 
 # Student Views
@@ -391,12 +398,13 @@ def enrollment_list(request):
 
 @login_required(login_url="WhiteboardApp:login_post")
 def enrollment_list_of_student(request, student_id):
-    enrollments = get_list_or_404(Enrollment, student_id=student_id)
-
-    paginator = Paginator(enrollments, 4)  # Specify the number of courses to display per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
+    try:
+        enrollments = get_list_or_404(Enrollment, student_id=student_id)
+        paginator = Paginator(enrollments, 4)  # Specify the number of courses to display per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+    except:
+        page_obj = None
     return render(request, 'EnrolmentTemplates/Enrolment_List_of_student.html', {'enrollments': page_obj})
 
 
@@ -565,27 +573,32 @@ def main_banner(request):
 class CustomLoginView(LoginView):
     template_name = 'login.html'
 
-    def form_valid(self, form):
-        # Retrieve the username and password from the form
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        # Encrypt the clear-text username and password(using sample key)
-        key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
-        fernet = Fernet(key)
+    def form_invalid(self, form):
+        # This method is called when the form is invalid (login fails)
+        # You can add any custom logic here before rendering the template
+        return self.render_to_response(self.get_context_data(form=form))
 
-        user = auth.authenticate(self.request, username=username, password=password)
-
-        encrypted_username = fernet.encrypt(username.encode()).decode()
-        encrypted_password = fernet.encrypt(password.encode()).decode()
-        encrypted_user_id = fernet.encrypt(
-            str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
-
-        response = super().form_valid(form)  # Call the parent method to get the original response
-
-        response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
-        response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
-        response.set_cookie('user_id', encrypted_user_id, max_age=3600)
-        return response
+    # def form_valid(self, form):
+    #     # Retrieve the username and password from the form
+    #     username = form.cleaned_data.get('username')
+    #     password = form.cleaned_data.get('password')
+    #     # Encrypt the clear-text username and password(using sample key)
+    #     key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
+    #     fernet = Fernet(key)
+    #
+    #     user = auth.authenticate(self.request, username=username, password=password)
+    #
+    #     encrypted_username = fernet.encrypt(username.encode()).decode()
+    #     encrypted_password = fernet.encrypt(password.encode()).decode()
+    #     encrypted_user_id = fernet.encrypt(
+    #         str(user.id).encode()).decode()  # Note: we convert the id to string before encoding
+    #
+    #     response = super().form_valid(form)  # Call the parent method to get the original response
+    #
+    #     response.set_cookie('username', encrypted_username, max_age=3600)  # Set username cookie with 1 hour expiration
+    #     response.set_cookie('password', encrypted_password, max_age=3600)  # Set password cookie with 1 hour expiration
+    #     response.set_cookie('user_id', encrypted_user_id, max_age=3600)
+    #     return response
 
 
 class CustomLogoutView(LogoutView):

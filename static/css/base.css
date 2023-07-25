@@ -34,3 +34,61 @@
 body {
   font-size: 14px;
 }
+
+
+.memberships-container {
+    display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .membership-card {
+            flex: 0 0 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .membership-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .membership-price {
+            color: green;
+            font-weight: bold;
+        }
+        .buy-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+.buy-button:hover {
+    color: white;
+}
+
+.StripeElement--focus {
+      color: #495057;
+      background-color: #fff;
+      border-color: #80bdff;
+      outline: 0;
+      box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+  }
+  .card-element-disabled {
+      background-color: #e9ecef;
+      opacity: 1;
+  }
+  #card-element {
+      display: flex;
+      align-items: center;
+  }
+  #card-element div {
+      flex-grow: 1;
+  }
+  #card-element-error {
+      color: #ff0000;
+  }

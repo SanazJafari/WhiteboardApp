@@ -17,13 +17,27 @@
     </div>
     <div class="container">
         <div class="row">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="payment-form">
                 {% csrf_token %}
+
+            <div class="form-group" style="width: 400px; margin:0 auto;">
+                <div id="card-element" class="form-control" >
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                 <button type="submit" class="btn btn-primary btn-sm mt-4 mb-3">
+                                <i class="fa-solid fa-money-check-dollar"></i> Pay
+                 </button>
+            </div>
+            <!-- Used to display form errors. -->
+            <div id="card-errors" role="alert"></div>
+
+            <div class="col-12"></div>
+
                 <div class="col-md-8 offset-md-2">
                     <form class="row g-3">
 
                         {# Student #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <input type="hidden" class="form-control form-control-sm"
                                    id="{{ form.student.id_for_label }}"
                                    name="{{ form.student.html_name }}"
@@ -32,7 +46,7 @@
                         </div>
 
                         {# Amount #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Amount: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="{{ form.amount.id_for_label }}"
@@ -42,7 +56,7 @@
                         </div>
 
                         {# Currency #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Currency: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="{{ form.currency.id_for_label }}"
@@ -52,7 +66,7 @@
                         </div>
 
                         {# Card Number #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <span class="input-group-text" id="inputGroup-sizing-sm">card number: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="{{ form.card_number.id_for_label }}"
@@ -62,7 +76,7 @@
                         </div>
 
                         {# expiration_date #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <span class="input-group-text" id="inputGroup-sizing-sm">expiration date: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="{{ form.expiration_date.id_for_label }}"
@@ -72,7 +86,7 @@
                         </div>
 
                         {# cvc #}
-                        <div class="input-group input-group-sm mb-2">
+                        <div class="input-group input-group-sm mb-2 d-none">
                             <span class="input-group-text" id="inputGroup-sizing-sm">cvc: </span>
                             <input type="text" class="form-control form-control-sm"
                                    id="{{ form.cvc.id_for_label }}"
@@ -81,7 +95,7 @@
                                    value="{{ form.cvc.value|default:'' }}">
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-12 d-none">
                             <button type="button" class="btn btn-secondary btn-sm"
                                     onclick="$('#{{ form.user.id_for_label }}, #{{ form.profile_picture.id_for_label }}, #{{ form.bio.id_for_label }}, #{{ form.date_of_birth.id_for_label }}, #{{ form.address.id_for_label }}, #{{ form.website.id_for_label }}, #{{ form.phone_number.id_for_label }}, #{{ form.courses_enrolled.id_for_label }}, #{{ form.membership.id_for_label }}, #{{ form.additional_data.id_for_label }}').val('');">
                                 <i class="fas fa-times"></i> Clear Form
@@ -118,4 +132,70 @@
 
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Create a Stripe client.
+        var stripe = Stripe('{{ stripe_publishable_key }}');
+
+        // Create an instance of Elements.
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        // (Note that this demo uses a wider set of styles than the guide below.)
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: 'Arial, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` div.
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Insert the token ID into the form so it gets submitted to the server.
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.setAttribute('type', 'hidden');
+                    hiddenInput.setAttribute('name', 'stripeToken');
+                    hiddenInput.setAttribute('value', result.token.id);
+                    form.appendChild(hiddenInput);
+
+                    // Submit the form
+                    form.submit();
+                }
+            });
+        });
+    </script>
 {% endblock %}

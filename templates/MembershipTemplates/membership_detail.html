@@ -6,7 +6,10 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ membership.get_name_display }}</h1>
-    <p>{{ membership.description }}</p>
-    <a href="{% url 'WhiteboardApp:membership-update' membership.pk %}">Update Membership</a>
+    <h1>My Membership</h1>
+    <h3> {{ membership.get_name_display }}</h3>
+    <p> {{ membership.description }}</p>
+    <p>{{ membership.benefits }}</p>
+    <p>You have been enrolled to {{ student_enrolled_course_count }} courses </p>
+    <a href="{% url 'WhiteboardApp:membership-list' %}">Update or Buy new Membership</a>
 {% endblock %}

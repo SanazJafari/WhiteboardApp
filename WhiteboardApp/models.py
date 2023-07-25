@@ -41,7 +41,7 @@ class Course(models.Model):
 
 class Membership(models.Model):
     MEMBERSHIP_CHOICES = (
-        ('no', 'No-Membership'),
+        ('no', 'Trail'),
         ('gold', 'Gold'),
         ('silver', 'Silver'),
         ('bronze', 'Bronze'),

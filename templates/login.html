@@ -37,6 +37,12 @@
             {% endfor %}
 
         {% endif %}
+        {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        {{ form.non_field_errors|striptags }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+        {% endif %}
     </form>
     <p class="footer-text">Don't have an account?</p>
         <a href="{% url 'WhiteboardApp:signup' 1%}">Instructor Sign up</a>
