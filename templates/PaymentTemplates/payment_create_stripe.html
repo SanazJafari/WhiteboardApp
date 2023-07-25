@@ -1,48 +1,105 @@
+{#This line tells Django to extend the base template named "base.html". #}
+{#The base template usually contains common elements like header, footer,#}
+{#and navigation menus that are shared across multiple pages.#}
 {% extends "base.html" %}
+
+{#This line loads the static files template tag, #}
+{#allowing the use of static files like CSS and JavaScript in the template.#}
 {% load static %}
 
+{#These are block tags that allow other templates extending this one to override the contents inside them. #}
+{#In this case,  the styles block is intended to load CSS files.#}
 {% block styles %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
+{#This block sets the title of the page. The title will be "Make a Payment | WhiteboardApp". #}
+{#The text "Make a Payment" comes from this block, #}
+{#and "WhiteboardApp" might be a reference to the application name.#}
 {% block title %}Make a Payment | WhiteboardApp{% endblock %}
+
+{#This block is empty and does not display anything. #}
+{#It's likely meant to be overridden in the extended templates to include a carousel component if needed.#}
 {% block carousel %}
 {% endblock %}
 
-
+{#This block represents the main content of the page.#}
 {% block content %}
+    {# This div contains a container with Bootstrap classes that centers the content horizontally. #}
     <div class="container col-md-7 row justify-content-center">
+        {#The content inside this div includes an image tag with the payment banner. #}
+        {#The image source is fetched using the {% static %} template tag to load a static image file from the static directory.#}
         <img src="{% static 'image/payment_images/payment banner.jpg' %}" class="img-fluid">
     </div>
+    {#    This div contains a text-center class, #}
+    {#    which centers the content (in this case, the following heading) horizontally.#}
     <div class="text-center">
+        {#  there's an <h1> heading with the class display-4 and font-weight-bold, #}
+        {#  which makes the heading larger and bold. #}
+        {#  The text-shadow property adds a shadow effect to the text,#}
+        {#  Padding adds some spacing around the heading#}
         <h1 class="display-4 font-weight-bold" style="text-shadow: 2px 2px 4px rgba(3, 0, 0, 3); padding: 10px;">
             Make a Payment
         </h1>
     </div>
+    {# This div creates another container to wrap the form content for making a payment.#}
     <div class="container">
+        {#  This div creates a row within the container to structure the form elements in a row layout.#}
         <div class="row">
+            {#  This is the main form element for submitting the payment details. #}
+            {#  The method="post" attribute specifies that the form data should be sent using the HTTP POST method. #}
+            {#  The enctype="multipart/form-data" attribute is used when the form includes file uploads.#}
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                {#  This div uses the Bootstrap grid system to define the column layout for the form content. #}
+                {#  The class col-md-8 means the div will occupy 8 columns out of 12 available columns on medium-sized screens,#}
+                {#  and offset-md-2 means the div will be offset by 2 columns.#}
                 <div class="col-md-8 offset-md-2">
+                    {#  This creates another nested form element inside the previous form element. #}
+                    {#  It's worth noting that nesting forms is not recommended and could lead to issues. #}
+                    {#  This inner form does not have the method and enctype attributes, #}
+                    {#  So it won't actually submit data independently.#}
                     <form class="row g-3">
-
                         {# Student #}
+                        {#                        This creates a <div> element with two Bootstrap classes applied to it: #}
+                        {#                        The input-group class is used to group elements together to form an input group, #}
+                        {#                        and input-group-sm applies small padding and font size to the input group. #}
+                        {#                        The mb-2 class adds margin at the bottom of the div.#}
                         <div class="input-group input-group-sm mb-2">
+                            {#                         This creates an <input> element of type "hidden." #}
+                            {#                         A hidden input is a form field that is not displayed to the user #}
+                            {#                         but is still sent to the server when the form is submitted. #}
+                            {#                         It's commonly used to store data that doesn't need to be visible to the user on the form.#}
                             <input type="hidden" class="form-control form-control-sm"
+                                    {#                            The id attribute is dynamically generated by Django's form system. #}
+                                    {#                            It assigns a unique identifier to the input field,#}
+                                    {#                            which is useful for associating labels with their respective form fields.#}
                                    id="{{ form.student.id_for_label }}"
+                                    {#                          The name attribute is dynamically generated by Django's form system. #}
+                                    {#                          It specifies the name of the input field, which is used #}
+                                    {#                          to identify the field in the submitted form data.#}
                                    name="{{ form.student.html_name }}"
+                                    {#                          This sets the placeholder text for the input field. #}
+                                    {#                          The placeholder text is a short hint that is displayed in the input field before the user enters any value.#}
                                    placeholder="student"
+                                    {#                          The value attribute is dynamically populated with the value of the form field. #}
+                                    {#                          form.student.value fetches the current value of the "student" field from the form object. #}
+                                    {#                          The default filter is used as a fallback in case the value is not available or is empty. #}
+                                    {#                          If the value is not available, an empty string will be used as the default value.#}
                                    value="{{ form.student.value|default:'' }}">
                         </div>
 
                         {# Amount #}
                         <div class="input-group input-group-sm mb-2">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Amount: </span>
-                            <input type="text" class="form-control form-control-sm"
-                                   id="{{ form.amount.id_for_label }}"
-                                   name="{{ form.amount.html_name }}"
-                                   placeholder="100"
-                                   value="{{ form.amount.value|default:'' }}">
+                            <select class="form-control form-control-sm"
+                                    id="{{ form.amount.id_for_label }}"
+                                    name="{{ form.amount.html_name }}">
+                                <option value="" disabled selected>Select an Amount</option>
+                                {% for value, label in form.amount.field.choices %}
+                                    <option value="{{ value }}" {% if value == form.amount.value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
 
                         {# Currency #}
@@ -96,19 +153,19 @@
                         </div>
                         <br>
                         <div class="form-field"></div>
+                    
                         {% if form.errors %}
                             {% for field in form %}
                                 {% for error in field.errors %}
                                     <div class="alert alert-danger alert-dismissible fade show">
-                                        {{ field }}: {{ error }}
+                                        {{ field.name }}: {{ error }}
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close">
-                                        </button>
+                                                aria-label="Close"></button>
                                     </div>
                                 {% endfor %}
                             {% endfor %}
-
                         {% endif %}
+
                     </form>
 
                 </div>
@@ -119,6 +176,8 @@
 {% endblock %}
 
 
+{#These are block tags that allow other templates extending this one to override the contents inside them. #}
+{#In this case, the scripts block is intended to load JavaScript files.#}
 
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

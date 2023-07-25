@@ -222,7 +222,10 @@ def process_payment_stripe(request):
     if request.method == 'POST':
         stripe.api_key = settings.STRIPE_SECRET_KEY
         form = PaymentFormStripe(request.POST)
+        # Creates an instance of the form class, passing the POST data to it.
         if form.is_valid():
+            # If the form is valid, the view extracts the required data from the
+            # form's cleaned data (data that has been validated and processed by the form):
             amount = form.cleaned_data['amount']
             currency = form.cleaned_data['currency']
             card_number = form.cleaned_data['card_number']
@@ -245,8 +248,9 @@ def process_payment_stripe(request):
                 # )
 
                 # Create a payment intent and confirm the payment
+                # A payment intent is created using Stripe's API to initiate the payment process.
                 payment_intent = stripe.PaymentIntent.create(
-                    amount=int(amount * 100),  # Convert amount to cents
+                    amount=int(amount) * 100,  # Convert amount to cents
                     currency=currency,
                     # payment_method= payment_method.id,
                     payment_method="pm_card_mastercard",
@@ -259,6 +263,11 @@ def process_payment_stripe(request):
                                   card_number=card_number, expiration_date=expiration_date, cvc=cvc)
                 payment.save()
 
+                # update student membership based on his/her payment
+                membership = Membership.objects.get(price=amount)
+                student.membership = membership
+                student.save()
+
                 # save card number and expiration_date in session to store for next payments if needed
                 request.session['card_number'] = card_number
                 request.session['expiration_date'] = expiration_date
@@ -268,6 +277,9 @@ def process_payment_stripe(request):
             except stripe.error.CardError as e:
                 error_message = e.error.message
                 return render(request, 'PaymentTemplates/payment_Error.html', {'error_message': error_message})
+        else:
+            return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form})
+
     else:
         student = Student.objects.select_related('user').get(user_id=request.user.id)
         payment = Payment(student=student)
@@ -491,22 +503,7 @@ def grade_create_in_course(request, course_id):
 
 
 def main_banner(request):
-    # check cookie to see whether user is already login or not
-    encrypted_username = request.COOKIES.get('username')
-    encrypted_password = request.COOKIES.get('password')
-
-    if encrypted_username and encrypted_password and request.user.is_authenticated is False:
-        # Decrypt the encrypted username and password using the same key that we encrypt
-        key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
-        fernet = Fernet(key)
-        username = fernet.decrypt(encrypted_username.encode()).decode()
-        password = fernet.decrypt(encrypted_password.encode()).decode()
-
-        # use the authenticate function from Django authentication framework to verify the credentials
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            # Log in the user
-            login(request, user)
+    login_using_cookie(request)
 
     instructor = ''
     student = ''
@@ -522,9 +519,33 @@ def main_banner(request):
     return render(request, 'base.html', context)
 
 
+def login_using_cookie(request):
+    # check cookie to see whether user is already login or not
+    encrypted_username = request.COOKIES.get('username')
+    encrypted_password = request.COOKIES.get('password')
+    if encrypted_username and encrypted_password and request.user.is_authenticated is False:
+        # Decrypt the encrypted username and password using the same key that we encrypt
+        key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
+        fernet = Fernet(key)
+        username = fernet.decrypt(encrypted_username.encode()).decode()
+        password = fernet.decrypt(encrypted_password.encode()).decode()
+
+        # use the authenticate function from Django authentication framework to verify the credentials
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            # Log in the user
+            login(request, user)
+
+
+# This class inherits from Django's built-in LoginView class,
+# which is a class-based view used for handling user authentication and login functionality.
 class CustomLoginView(LoginView):
     template_name = 'login.html'
 
+    # this method is called when the login
+    # form submission is invalid(e.g., incorrect username or password).
+    # the form_invalid() method of the parent class(LoginView) using super().
+    # This ensures that the original behavior of the form_invalid() method from the parent class is preserved.
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password. Please try again.")
         return super().form_invalid(form)
@@ -537,6 +558,9 @@ class CustomLoginView(LoginView):
         # Encrypt the clear-text username and password(using sample key)
         key = b'nq_WGKCAXOc4ZL1hcd3R37aUKWyUwqAxVLA482NU1Og='
         fernet = Fernet(key)
+        # here we first convert username and password string to ByteArray using encode
+        # second, encrypt it using fernet encrypt method
+        # since encrypt result is ByteArray, we are using Decode to convert it to String
         encrypted_username = fernet.encrypt(username.encode()).decode()
         encrypted_password = fernet.encrypt(password.encode()).decode()
 
