@@ -1,20 +1,3 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block title %}Grade Create | WhiteboardApp{% endblock %}#}
-{##}
-{#{% block carousel %}#}
-{#{% endblock %}#}
-{##}
-{#{% block content %}#}
-{#    <h1>Create Grade</h1>#}
-{#    <form method="post">#}
-{#        {% csrf_token %}#}
-{#        {{ form.as_p }}#}
-{#        <button type="submit" class="btn btn-primary">Create</button>#}
-{#    </form>#}
-{#    <p><a href="{% url 'WhiteboardApp:grade_list_of_course' course_id %}">Back to Course Grade List</a></p>#}
-{#{% endblock %}#}
-
 {% extends "base.html" %}
 
 {% block styles %}
@@ -29,7 +12,7 @@
 {% block content %}
     <div class="text-center">
         <h1 class="display-4 font-weight-bold" style="text-shadow: 2px 2px 4px rgba(3, 0, 0, 3); padding: 10px;">
-            Create Grade
+            create Grade
         </h1>
     </div>
     <div class="container">
@@ -87,7 +70,7 @@
                                 <i class="fas fa-times"></i> Clear Form
                             </button>
                             <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fas fa-user-pen"></i> Create Grade
+                                <i class="fas fa-user-pen"></i> Update Grade
                             </button>
                         </div>
                         <br>

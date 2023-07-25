@@ -43,9 +43,19 @@ class EnrollmentForm(forms.ModelForm):
 
 
 class GradeForm(forms.ModelForm):
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
+    course = forms.ModelChoiceField(queryset=Course.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
+    
     class Meta:
         model = Grade
         fields = ['student', 'course', 'grade']
+        widgets = {
+            'grade': forms.NumberInput(attrs={
+                'min': 0, 'max': 100,
+                'class': 'form-control',
+                'placeholder': "Enter a grade between 0 and 100"
+                })
+        }
 
 
 class SignUpForm(UserCreationForm):
