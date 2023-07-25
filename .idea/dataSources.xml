@@ -10,7 +10,7 @@
       <jdbc-url>jdbc:sqlite:D:\Django Projects\Whiteboard\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="db.sqlite3" uuid="474ff233-bdf5-4715-b49b-e8ff3d1197b9">
+    <data-source source="LOCAL" name="db.sqlite3" uuid="90db4594-951d-4070-82fe-4f396aca4c04">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

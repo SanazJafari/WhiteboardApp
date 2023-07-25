@@ -280,12 +280,15 @@ def process_payment_stripe(request):
             return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form})
 
     else:
-        student = Student.objects.select_related('user').get(user_id=request.user.id)
+
+        student = Student.objects.filter(user_id=request.user.id).first()
         payment = Payment(student=student)
         form = PaymentFormStripe(instance=payment)
+
         # read card_number and expiration_date from session and send to from
         card_number = request.session.get('card_number')
         expiration_date = request.session.get('expiration_date')
+
         return render(request, 'PaymentTemplates/payment_create_stripe.html', {'form': form,
                                                                                'card_number': card_number,
                                                                                'expiration_date': expiration_date})
