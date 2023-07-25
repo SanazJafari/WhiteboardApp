@@ -181,3 +181,20 @@ class Contributors(models.Model):
         db_table = 'WhiteboardApp_contributors'
         verbose_name = 'contributors'
         verbose_name_plural = 'contributors'
+
+class AboutUs(models.Model):
+    title = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    university = models.CharField(max_length=100)
+
+    description = models.TextField()
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'WhiteboardApp_aboutus'
+        verbose_name = 'aboutus'
+        verbose_name_plural = 'aboutus'

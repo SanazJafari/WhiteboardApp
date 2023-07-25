@@ -6,7 +6,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
 from WhiteboardApp.models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
-    Progress
+    Progress, Contributors
 from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
     EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm, ContactForm
 import os
@@ -836,4 +836,6 @@ def contact_us(request):
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- About Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
 @login_required(login_url="WhiteboardApp:login_post")
 def about_us(request):
-    return render(request, 'AboutUsTemplates/AboutUs.html')
+    contributors = Contributors.objects.all()
+    context = {'contributors': contributors}
+    return render(request, 'AboutUsTemplates/AboutUs.html', context)
