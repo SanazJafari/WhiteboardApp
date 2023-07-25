@@ -25,9 +25,9 @@ class MembershipForm(forms.ModelForm):
 
 class PaymentFormStripe(forms.ModelForm):
     AMOUNT_CHOICES = (
-        ('20', 'Gold: 20'),
-        ('10', 'Silver: 10'),
-        ('5', 'Bronze: 5'),
+        ('20', '20 (Gold membership)'),
+        ('10', '10 (Silver membership)'),
+        ('5', '5 (Bronze membership)'),
     )
     amount = forms.ChoiceField(choices=AMOUNT_CHOICES, required=True)
     currency = forms.CharField(max_length=3, required=True)
