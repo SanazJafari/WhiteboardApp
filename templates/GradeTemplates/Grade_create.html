@@ -19,78 +19,46 @@
         <div class="row">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="col-md-8 offset-md-2">
-                    <form class="row g-3">
-
-                        {# student #}
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="{{ form.student.id_for_label }}"
-                                   class="input-group-text">student: </label>
-                            <select class="form-select"
-                                    id="{{ form.student.id_for_label }}"
-                                    name="{{ form.student.html_name }}">
-                                {% for student in form.student.field.queryset %}
-                                    <option value="{{ student.id }}"
-                                            {% if student.id == form.student.value %}selected{% endif %}>
-                                        {{ student }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        {# course #}
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="{{ form.course.id_for_label }}"
-                                   class="input-group-text">course: </label>
-                            <select class="form-select"
-                                    id="{{ form.course.id_for_label }}"
-                                    name="{{ form.course.html_name }}">
-                                {% for course in form.course.field.queryset %}
-                                    <option value="{{ course.id }}"
-                                            {% if course.id == form.course.value %}selected{% endif %}>
-                                        {{ course }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        {# grade #}
-                        <div class="input-group input-group-sm mb-2">
-                            <span class="input-group-text" id="inputGroup-sizing-sm">grade: </span>
-                            <input type="text" class="form-control form-control-sm"
-                                   id="{{ form.grade.id_for_label }}"
-                                   name="{{ form.grade.html_name }}"
-                                   placeholder="99"
-                                   value="{{ form.grade.value|default:'' }}">
-                        </div>
-
-                        <div class="col-12">
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="$('#{{ form.student.id_for_label }}, #{{ form.course.id_for_label }}, #{{ form.grade.id_for_label }}').val('');">
-                                <i class="fas fa-times"></i> Clear Form
-                            </button>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fas fa-user-pen"></i> Update Grade
-                            </button>
-                        </div>
-                        <br>
-                        <div class="form-field"></div>
-                        {% if form.errors %}
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">
-                                        {{ error }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close">
-                                        </button>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-
+                <div class="col-md-7 offset-md-3">
+                    <div class="form-group">
+                        {{ form.student.label_tag }}
+                        {{ form.student }}
+                        {% if form.student.errors %}
+                            <p class="text-danger">{{ form.student.errors }}</p>
                         {% endif %}
-                    </form>
-
-                </div>
+                    </div>
+                    <br>
+                    
+                    <div class="form-group">
+                        {{ form.course.errors }}
+                        {{ form.course.label_tag }}
+                        {{ form.course }}
+                        {% if form.course.errors %}
+                            <p class="text-danger">{{ form.course.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <br>
+    
+                    <div class="form-group">
+                        {{ form.grade.errors }}
+                        {{ form.grade.label_tag }}
+                        {{ form.grade }}
+                        {% if form.grade.errors %}
+                            <p class="text-danger">{{ form.grade.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <br>
+    
+                    <div class="">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="$('#{{ form.student.id_for_label }}, #{{ form.course.id_for_label }}, #{{ form.grade.id_for_label }}').val('');">
+                            <i class="fas fa-times"></i> Clear Form
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-pen"></i> Update Grade
+                        </button>
+                    </div>
+                    </div>
             </form>
         </div>
     </div>
