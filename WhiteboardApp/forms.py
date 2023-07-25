@@ -89,5 +89,8 @@ class PhoneVerificationForm(forms.ModelForm):
 
 
 class ContactForm(forms.Form):
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    email = forms.EmailField(required=True)
     subject = forms.CharField(required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)

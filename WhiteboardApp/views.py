@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth import authenticate, login
 from django.contrib import auth
+from datetime import datetime, timezone
 from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
@@ -12,7 +13,6 @@ from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, Stud
 import os
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import JsonResponse, BadHeaderError, HttpResponse
-import datetime
 from django.core.paginator import Paginator
 
 import stripe
@@ -199,7 +199,8 @@ def membership_list(request):
 def membership_detail(request, pk):
     membership = get_object_or_404(Membership, pk=pk)
     student_enrolled_course_count = Enrollment.objects.filter(student_id=request.user.student.id).count()
-    return render(request, 'MembershipTemplates/membership_detail.html', {'membership': membership, 'student_enrolled_course_count': student_enrolled_course_count})
+    return render(request, 'MembershipTemplates/membership_detail.html',
+                  {'membership': membership, 'student_enrolled_course_count': student_enrolled_course_count})
 
 
 def membership_update(request, pk):
@@ -264,13 +265,13 @@ def process_payment_stripe(request, pk):
 
         # amount = form.cleaned_data['amount']
         stripe_token = request.POST['stripeToken']
-        #currency = form.cleaned_data['currency']
-        #card_number = form.cleaned_data['card_number']  # amount = form.cleaned_data['amount']
-        #expiration_date = form.cleaned_data['expiration_date']  # currency = form.cleaned_data['currency']
-        #cvc = form.cleaned_data['cvc']  # card_number = form.cleaned_data['card_number']
-        #date_values = expiration_date.split('/')  # expiration_date = form.cleaned_data['expiration_date']
-        #month = date_values[0]  # cvc = form.cleaned_data['cvc']
-        #year = date_values[1]  # date_values = expiration_date.split('/')
+        # currency = form.cleaned_data['currency']
+        # card_number = form.cleaned_data['card_number']  # amount = form.cleaned_data['amount']
+        # expiration_date = form.cleaned_data['expiration_date']  # currency = form.cleaned_data['currency']
+        # cvc = form.cleaned_data['cvc']  # card_number = form.cleaned_data['card_number']
+        # date_values = expiration_date.split('/')  # expiration_date = form.cleaned_data['expiration_date']
+        # month = date_values[0]  # cvc = form.cleaned_data['cvc']
+        # year = date_values[1]  # date_values = expiration_date.split('/')
         try:  # month = date_values[0]
             # this one is only in use for real case payment	        # year = date_values[1]
             # Create a payment method using Stripe Elements	        try:
@@ -292,13 +293,14 @@ def process_payment_stripe(request, pk):
                 amount=int(membership.price),
                 # Convert amount to cents	            membership = Membership.objects.get(id=pk)
                 currency='cad',
-                payment_method = "pm_card_mastercard",
-                confirm = True
+                payment_method="pm_card_mastercard",
+                confirm=True
                 # Handle successful payment
             )
 
-            #student = form.cleaned_data['student']
-            payment = Payment(student_id=request.user.student.id, amount=membership.price, currency='CAD', card_number='4444',
+            # student = form.cleaned_data['student']
+            payment = Payment(student_id=request.user.student.id, amount=membership.price, currency='CAD',
+                              card_number='4444',
                               expiration_date='12/24', cvc='321')
             # student = form.cleaned_data['student']
             student = get_object_or_404(Student, user_id=request.user.id)
@@ -767,7 +769,6 @@ def phone_verification(request):
                   {'form': form, 'pageTitle': 'Phone Verification'})
 
 
-
 def verify_phone_number(request):
     if request.method == 'POST':
         entered_code = request.POST.get('code')
@@ -809,25 +810,30 @@ def contact_us(request):
         form = ContactForm(request.POST)
         if form.is_valid():
 
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
+
+            message_body = f"Name: {first_name} {last_name}\n" \
+                           f"Email: {email}\n" \
+                           f"Date: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}\n" \
+                           f"Message body: {message}"
+
             from_email = request.user.email
 
             try:
-                email = EmailMessage(
-                    subject,
-                    message,
-                    from_email,
-                    [settings.EMAIL_HOST_USER],
-                    reply_to=[from_email],
-                )
-                email.send()
+                send_mail(subject, message_body, from_email, ['whiteboard.internetapplication@gmail.com'])
+
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             # Show a message that the email has been sent successfully, and redirect to the Contact Us page
             messages.success(request, 'Your message has been sent successfully.')
             return redirect('WhiteboardApp:contact-us')
 
+        else:
+            print(form.errors)
     else:
         form = ContactForm()
     return render(request, 'ContactUsTemplates/ContactUs.html', {'form': form})
