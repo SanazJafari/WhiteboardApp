@@ -542,8 +542,7 @@ def login_using_cookie(request):
 class CustomLoginView(LoginView):
     template_name = 'login.html'
 
-    # this method is called when the login
-    # form submission is invalid(e.g., incorrect username or password).
+    # this method is called when the login form submission is invalid(e.g., incorrect username or password).
     # the form_invalid() method of the parent class(LoginView) using super().
     # This ensures that the original behavior of the form_invalid() method from the parent class is preserved.
     def form_invalid(self, form):
@@ -570,10 +569,13 @@ class CustomLoginView(LoginView):
         return response
 
 
+# inherits from Django's built-in LogoutView
 class CustomLogoutView(LogoutView):
     next_page = 'WhiteboardApp:main_banner'
 
+    # handle incoming requests
     def dispatch(self, request, *args, **kwargs):
+        # invokes the dispatch method of the parent LogoutView, allowing the standard logout process to take place
         response = super().dispatch(request, *args, **kwargs)
         response.delete_cookie('username')
         response.delete_cookie('password')
@@ -604,7 +606,6 @@ def signup_post(request, userType):
 
 
 # Content Views
-
 @login_required(login_url="WhiteboardApp:login_post")
 def content_list_for_instructor(request, instructor_id):
     contents = Content.objects.filter(course__instructor_id=instructor_id)

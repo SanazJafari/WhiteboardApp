@@ -35,7 +35,7 @@ class PaymentFormStripe(forms.ModelForm):
     expiration_date = forms.CharField(max_length=5, required=True)
     cvc = forms.CharField(max_length=5, required=True)
 
-    def clean_expiration_date(self):
+    def clean_expiration_date(self): # validation of expiration_date
         expiration_date = self.cleaned_data['expiration_date']
         if len(expiration_date) != 5 or not expiration_date[2] == '/':
             raise forms.ValidationError("Invalid card expiration date format. Please enter the date in the format MM/YY.")
@@ -52,7 +52,7 @@ class PaymentFormStripe(forms.ModelForm):
 
         return expiration_date
 
-    def clean_card_number(self):
+    def clean_card_number(self): # validation of card_number
         card_number = self.cleaned_data['card_number']
         # Remove any spaces or hyphens from the card number
         card_number = card_number.replace(" ", "").replace("-", "")
