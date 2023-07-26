@@ -222,10 +222,7 @@ def process_payment_stripe(request):
     if request.method == 'POST':
         stripe.api_key = settings.STRIPE_SECRET_KEY
         form = PaymentFormStripe(request.POST)
-        # Creates an instance of the form class, passing the POST data to it.
         if form.is_valid():
-            # If the form is valid, the view extracts the required data from the
-            # form's cleaned data (data that has been validated and processed by the form):
             amount = form.cleaned_data['amount']
             card_number = form.cleaned_data['card_number']
             expiration_date = form.cleaned_data['expiration_date']
@@ -258,8 +255,8 @@ def process_payment_stripe(request):
 
                 # Handle successful payment
                 student = form.cleaned_data['student']
-                payment = Payment(student_id=student.id, amount=amount, currency='CAD',
-                                  card_number=card_number, expiration_date=expiration_date, cvc=cvc)
+                payment = Payment(student_id=student.id, amount=amount, currency='CAD', card_number=card_number,
+                                  expiration_date=expiration_date, cvc=cvc)
                 payment.save()
 
                 # update student membership based on his/her payment
@@ -281,7 +278,7 @@ def process_payment_stripe(request):
 
     else:
 
-        student = Student.objects.filter(user_id=request.user.id).first()
+        student = Student.objects.get(user_id=request.user.id)
         payment = Payment(student=student)
         form = PaymentFormStripe(instance=payment)
 
@@ -544,9 +541,6 @@ def login_using_cookie(request):
 class CustomLoginView(LoginView):
     template_name = 'login.html'
 
-    # this method is called when the login form submission is invalid(e.g., incorrect username or password).
-    # the form_invalid() method of the parent class(LoginView) using super().
-    # This ensures that the original behavior of the form_invalid() method from the parent class is preserved.
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password. Please try again.")
         return super().form_invalid(form)

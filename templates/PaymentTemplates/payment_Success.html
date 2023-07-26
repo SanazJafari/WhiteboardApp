@@ -1,47 +1,42 @@
-
 {% extends "base.html" %}
 
 {% load static %}
 
-{% block title %}Successful Payment | WhiteboardApp{% endblock %}
+{% block title %} Successful Payment | WhiteboardApp{% endblock %}
 
 {% block carousel %}
 {% endblock %}
 
 {% block content %}
+
     <div class="container border border-3">
-        <div class="container mt-5">
+        <div class="row justify-content-center">
+            <img class="img-fluid" src="{% static 'image/payment_images/success_2.png' %}">
+        </div>
+        <div class="container mt-3">
             <div class="row justify-content-center">
-                <img src="{% static 'image/payment_images/success_2.png' %}" class="img-fluid">
-            </div>
-            <div class="container mt-5">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header bg-success text-light">
-                                <h4 class="text-center">Payment Details</h4>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="text-center">You have successfully paid {{ amount }}
-                                    in {{ currency }}</h3>
-                                <div class="d-grid gap-2 col-6 mx-auto mt-4">
-                                    <a class="btn btn-primary"
-                                       href="{% url 'WhiteboardApp:payment_list_of_student' user.student.id %}">
-                                        <i class="fa-solid fa-list me-2"></i> Show Payments List
-                                    </a>
-                                </div>
-                            </div>
+                <div class="card">
+                    <div class="card-header bg-success text-light">
+                        <h4 class="text-center">Payment Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="text-center">You have successfully paid {{ amount }} in {{ currency }}</h3>
+                        <div class="d-grid gap-2 col-6 mx-auto mt-2">
+                            <a class="btn btn-primary"
+                               href="{% url 'WhiteboardApp:payment_list_of_student' user.student.id %}">
+                                <i class="fa-solid fa-list me-2"></i> Show Payments List
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div>
-                </br>
-                </br>
-                </br>
-                </br>
-                </br>
-            </div>
+        </div>
+        <div>
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
         </div>
     </div>
 

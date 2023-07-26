@@ -1,12 +1,10 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 
@@ -27,17 +25,6 @@
         <button class="btn-login" type="submit">Login</button>
         <div class="form-field"></div>
 
-        {% if form.errors %}
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <div class="alert alert-danger alert-dismissible fade show">
-                        {{ error }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        {% endif %}
-
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-danger alert-dismissible fade show">
@@ -48,9 +35,12 @@
         {% endif %}
 
     </form>
+
     <p class="footer-text">Don't have an account?</p>
     <a href="{% url 'WhiteboardApp:signup' 1 %}">Instructor Sign up</a>
     <a href="{% url 'WhiteboardApp:signup' 2 %}">Student Sign up</a>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/981414d5bb.js" crossorigin="anonymous"></script>
 </body>
 </html>
