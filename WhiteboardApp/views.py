@@ -9,7 +9,8 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404, redirec
 from WhiteboardApp.models import User, Instructor, Course, Membership, Payment, Student, Enrollment, Grade, Content, \
     Progress, Contributors
 from .forms import InstructorForm, CourseForm, MembershipForm, PaymentForm, StudentForm, \
-    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm, ContactForm
+    EnrollmentForm, GradeForm, SignUpForm, PaymentFormStripe, ContentForm, PhoneVerificationForm, ContactForm, \
+    VerificationForm
 import os
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import JsonResponse, BadHeaderError, HttpResponse
@@ -614,6 +615,10 @@ class CustomLogoutView(LogoutView):
         return response
 
 
+def generate_verification_code():
+    return str(random.randint(100000, 999999))
+
+
 def signup_post(request, userType):
     if userType == 1:
         page_title = 'Instructor Sign-Up'
@@ -625,13 +630,29 @@ def signup_post(request, userType):
         if form.is_valid():
             user = form.save()
 
+            # Store the user's email in the session
+            request.session['email'] = user.email
+
             if userType == 1:
                 instructor = Instructor(user_id=user.id)
                 instructor.save()
             else:
                 student = Student(user_id=user.id)
+                # Generate a verification code and save it
+                student.email_verification_code = generate_verification_code()
                 student.save()
-            return redirect('WhiteboardApp:login_post')  # Redirect to login page after successful sign-up
+
+                # Send verification email
+                send_mail(
+                    'Email Verification Code',
+                    f'Your verification code in WhiteboardApp is {student.email_verification_code}',
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False,
+                )
+
+            return redirect(
+                'WhiteboardApp:email-verification')  # Redirect to verification page after successful sign-up
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form, 'pageTitle': page_title})
@@ -801,6 +822,33 @@ def verify_phone_number(request):
                           {'error': 'No phone number provided.'})
     else:
         return render(request, 'VerificationTemplates/verify_phone_number.html')
+
+
+# -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- Email verification -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #
+def email_verification(request):
+    if request.method == 'POST':
+        form = VerificationForm(request.POST)
+
+        if form.is_valid():
+            code = form.cleaned_data['verification_code']
+
+            # Retrieve the email from the session
+            email = request.session.get('email')
+
+            if email:
+                user = User.objects.get(email=email)
+                student = Student.objects.get(user=user)
+
+            if student.email_verification_code == code:
+                if request.user.is_authenticated:
+                    messages.success(request, 'Email verified successfully.')
+                    return redirect('WhiteboardApp:login_post')  # Redirect to login page after successful verification
+            else:
+                messages.error(request, 'Invalid verification code.')
+    else:
+        form = VerificationForm()
+        print(form.errors)
+    return render(request, 'VerificationTemplates/verify_email.html', {'form': form})
 
 
 # -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- Contact Us -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_- #

@@ -94,3 +94,7 @@ class ContactForm(forms.Form):
     email = forms.EmailField(required=True)
     subject = forms.CharField(required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)
+
+
+class VerificationForm(forms.Form):
+    verification_code = forms.CharField(max_length=6)

@@ -103,4 +103,8 @@ urlpatterns = [
     # About Us Urls
     path('about_us/', views.about_us, name='about-us'),
 
+    #Email Verification
+    path('email_verification/', views.email_verification, name='email-verification'),
+
+
 ]

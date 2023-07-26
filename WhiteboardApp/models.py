@@ -70,6 +70,7 @@ class Student(models.Model):
     additional_data = models.JSONField(blank=True, null=True)
     # a field to store the verification code for the student when they want to sign up in the application.
     verification_code = models.CharField(max_length=6, blank=True, null=True)
+    email_verification_code = models.CharField(max_length=6, blank=True, null=True)
 
     class Meta:
         db_table = 'WhiteboardApp_student'
